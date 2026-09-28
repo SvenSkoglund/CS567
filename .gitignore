@@ -23,3 +23,11 @@ main.pdf
 
 # Professor feedback — keep private, not for public repo
 ProjectProposalFeedback.rtf
+
+# Redundant local-only files (kept on disk, excluded from repo).
+# Root-anchored so the copies inside CS567-Proposal-Template-LaTeX/ stay tracked.
+/CS567-Proposal-Skoglund.zip
+/CS567-Proposal-Template.docx
+/CS567-Proposal-Skoglund.docx
+/GeminiEnhancedMockup.jpeg
+/HandDrawnMockup.jpeg

@@ -17,7 +17,7 @@ Overleaf project:
   <PASTE_OVERLEAF_PROJECT_LINK>
 
 GitHub repository:
-  <PASTE_GITHUB_REPO_LINK>
+  https://github.com/SvenSkoglund/CS567
 
 Paper PDF (in this submission and in the repo):
   CS567-Proposal-Template-LaTeX/CS567-Checkpoint2-Skoglund.pdf
@@ -56,7 +56,11 @@ Local:
   (needs the acmart class; TeX Live 2020 or newer)
 
 Files:
-  CS567-Proposal-Template-LaTeX/main.tex          the paper
-  CS567-Proposal-Template-LaTeX/related-work.tex  related work section
-  CS567-Proposal-Template-LaTeX/references.bib     bibliography (verified)
+  readme.txt                                       this file (submission links)
   AGENT_DEV_LOG.md                                 agentic-AI development log
+  CS567-Proposal-Template-LaTeX/main.tex           the paper
+  CS567-Proposal-Template-LaTeX/related-work.tex   related work section
+  CS567-Proposal-Template-LaTeX/references.bib     bibliography (verified)
+  CS567-Proposal-Template-LaTeX/*.jpeg             figures
+  CS567-Proposal-Template-LaTeX/CS567-Checkpoint1-Skoglund.pdf   Checkpoint 1 PDF
+  CS567-Proposal-Template-LaTeX/CS567-Checkpoint2-Skoglund.pdf   Checkpoint 2 PDF
