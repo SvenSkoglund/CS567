@@ -1,0 +1,25 @@
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.bbl
+*.blg
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.toc
+*.lof
+*.lot
+
+# Keep the compiled paper PDFs (they are deliverables), but ignore the scratch main.pdf
+main.pdf
+
+# macOS
+.DS_Store
+
+# Editor
+*.swp
+*~
+
+# Professor feedback — keep private, not for public repo
+ProjectProposalFeedback.rtf

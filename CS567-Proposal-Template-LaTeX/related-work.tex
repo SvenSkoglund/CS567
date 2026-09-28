@@ -1,0 +1,134 @@
+%% ============================================================================
+%% Related Work — Checkpoint 1 (expanded).
+%%
+%% Uses ten author-verified references in references.bib:
+%%   slater2016enhancing, wu2020effectiveness, tsivitanidou2021inquiry,
+%%   georgiou2021led, makransky2019gender, wang2019haptic, lecuyer2000pseudo,
+%%   ujitoko2021pseudo, kim2022multisensory, bowman2004
+%%
+%% To use: \input{related-work} in main.tex in place of the current
+%% \section{Related Work}.
+%% ============================================================================
+
+\section{Related Work}
+Our sandbox sits at the intersection of four lines of research: immersive
+virtual reality (VR) for science learning, the difficulty of rendering weight and
+force on commodity hardware, the pseudo-haptic techniques that stand in for that
+missing sensation, and the interaction-design foundations that make direct
+manipulation legible. We review each in turn and close by stating what
+distinguishes our approach.
+
+\subsection{Immersive VR for Science Learning}
+The pedagogical case for immersive VR rests less on visual fidelity than on the
+sense of being present. Slater and S{\'a}nchez-Vives frame this through the place
+illusion (the feeling of being in the virtual space) and the plausibility
+illusion (the feeling that events are really happening), which together lead
+users to respond to virtual events as if they were real~\cite{slater2016enhancing}.
+For a physics sandbox this matters directly. If a learner treats a virtual block
+and lever as real objects, then manipulating them can carry the intuitive weight
+that a 2D simulation cannot.
+
+Empirical work in physics education adds a consistent caveat: immersion helps,
+but only when the learning experience is designed for it. A recent meta-analysis
+by Wu et al.\ across many head-mounted display studies finds that immersive VR
+yields a positive but moderate overall effect on learning performance, and that
+this effect is strongly moderated by factors such as subject domain, learner
+control, and how the experience is designed~\cite{wu2020effectiveness}.
+Tsivitanidou, Georgiou, and Ioannou report on an inquiry-based immersive VR
+physics activity from two angles: the learning experience they observe conceptual
+gains alongside an interaction with learners' attitudinal
+profiles~\cite{tsivitanidou2021inquiry}, and the design of that same experience,
+which they document as a worked case of learning-experience
+design~\cite{georgiou2021led}. We read this pair as evidence that immersive VR
+physics learning is feasible and can produce conceptual gains; it establishes
+that a VR physics activity can work, though it does not itself isolate felt weight
+or the effect of a haptic cue. One common way to scaffold such experiences is an
+embedded pedagogical agent. Makransky et al.\ studied one such agent and found a
+gender-matching effect: a virtual instructor aided learning most when its
+apparent gender matched the learner, a specific interaction rather than a general
+endorsement of pedagogical agents~\cite{makransky2019gender}. Taken together,
+these studies establish that immersive physics learning is promising but
+design-sensitive. The value comes from what the learner is asked to do and how
+the task is scaffolded, not from the headset itself. We take a deliberately
+different scaffolding stance. Rather than an in-scene agent, we scaffold through
+scene and task design, using tightly scoped scenarios that isolate a single
+variable so that the cause of each outcome is unambiguous.
+
+\subsection{The Missing Channel: Rendering Weight and Force}
+The central obstacle for a physics-of-materials experience is that the very
+quantity the lessons depend on, namely weight and the force needed to move a
+loaded mechanism, is the one commodity that VR cannot deliver. A handheld
+controller weighs the same whatever it represents. Wang et al.\ survey the state
+of haptic display for VR and make clear that genuine, general-purpose force
+feedback remains far from consumer reach, constrained by actuation, workspace,
+and grounding requirements that headset-and-controller setups do not
+meet~\cite{wang2019haptic}. Their survey frames the design problem for us
+precisely. If we want a denser object to feel heavier on a Quest 2, we cannot
+wait for the hardware to render the force, and must instead substitute perception
+for physics.
+
+\subsection{Pseudo-Haptics: Substituting Perception for Physics}
+Pseudo-haptics addresses this gap by exploiting the dominance of vision over
+proprioception. Manipulating the visual consequences of a motion, such as the
+control-to-display gain or a small lag between hand and object, induces a felt
+sense of weight, stiffness, or resistance without any force actuator. The
+foundational demonstration comes from L{\'e}cuyer et al., who showed that
+altering the visual response of an isometric input device makes users perceive
+force and stiffness that no actuator produces, establishing that a
+control-to-display manipulation alone can stand in for force
+feedback~\cite{lecuyer2000pseudo}. Ujitoko and Ban survey the design space and
+applications of pseudo-haptics, cataloguing how such visual manipulations
+reliably produce haptic sensations and how they have been
+applied~\cite{ujitoko2021pseudo}. Their taxonomy is the methodological backbone
+for how we map mass and mechanical load onto gain and visual lag.
+
+Two results ground our specific cue, the felt \emph{weight} of a held object.
+Dominjon et al.\ manipulated the control/display ratio of a manipulated object in
+a virtual environment and showed that this ratio directly changes its perceived
+mass, so that the same physical motion can be made to feel heavier or lighter by
+scaling its visual displacement~\cite{dominjon2005influence}. Rietzler et al.\
+carried the same idea to consumer VR: by introducing perceivable offsets between
+the tracked hand and the rendered object, they elicited a reliable sensation of
+weight on a commodity headset with no force
+hardware~\cite{rietzler2018breaking}. Together these establish that a gain or
+tracking-offset manipulation can render felt weight on exactly the class of
+device we target, and they fix the design variable for us: the cue must track an
+object's \emph{mass}, the quantity that determines weight, rather than its
+density. These techniques are not limited to lifting a single object. The same
+principle of modulating the visual outcome of an effort extends naturally to the
+resistance of operating a machine, such as a lever that grows harder to move as
+its load increases.
+
+\subsection{Foundations of 3D Interaction}
+Whatever the illusion, the learner must first be able to reach out, grab, and
+place objects fluidly, or the physics never gets probed. We ground our
+interaction design in Bowman et al.'s canonical treatment of 3D user interfaces,
+which formalizes selection, manipulation, and travel as the core tasks of spatial
+interaction and catalogues the techniques for each~\cite{bowman2004}. This
+foundation informs the grab-and-place model at the heart of the sandbox and keeps
+our contribution, the pseudo-haptic property mapping, layered on top of
+well-understood manipulation techniques rather than reinventing them.
+
+\subsection{What Is Different About Our Approach}
+Two gaps emerge from this literature. First, immersive physics studies
+consistently deliver visual and interactive experiences but rarely give learners
+a genuine felt contrast in weight between objects. A student may see that two
+blocks differ, but does not feel one resist more than the other. Second,
+pseudo-haptic studies convincingly render the felt weight of an isolated
+object~\cite{dominjon2005influence, rietzler2018breaking}, but seldom span both
+material properties (density, buoyancy, friction) and simple machines (levers,
+pulleys) within one coherent environment and interaction model. Our sandbox
+targets this intersection. We use pseudo-haptic gain and visual-lag modulation as
+a unifying mechanism that makes an unrenderable physical quantity perceptible
+across a family of controlled, single-variable scenarios, and we extend the same
+mechanism from holding a heavier object to feeling a loaded lever push back.
+Crucially, the cue tracks \emph{mass} for held objects and \emph{load} for the
+lever, the quantities that actually determine weight and effort, so that density
+is taught where it belongs, through the volume difference between equal-mass
+blocks and through float-or-sink behavior, rather than being conflated with
+heaviness. Because our contribution is an interaction technique for making a
+physical quantity felt, we evaluate it at two levels: a system level, checking
+that the cues behave monotonically with the underlying physics and that each
+scenario matches its closed-form prediction; and a human level, a within-subjects
+study testing whether the weight cue changes how accurately learners predict
+outcomes that depend on mass, density, and load.
