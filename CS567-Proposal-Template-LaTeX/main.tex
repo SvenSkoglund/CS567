@@ -155,6 +155,7 @@ scene. We already have a Quest 2 and a Unity development machine.
 \end{figure}
 
 \section{Prototype Validation}
+\label{sec:validation}
 Before any human data is collected, the prototype must be shown to behave
 correctly, and these system-level checks are a precondition for a meaningful
 study. \textbf{Physics fidelity:} automated checks compare each scenario against
@@ -173,64 +174,80 @@ kept from the first day of development. Passing these checks establishes that th
 two builds differ only in the presence of the weight cue, which is what the study
 in Section~\ref{sec:methodology} requires.
 
-\section{Methodology and Study Design}
+\section{Methodology}
 \label{sec:methodology}
 Making a physical quantity \emph{felt} is only worthwhile if it changes what
-learners understand, so beyond validating the system we run a small controlled
-study with human participants.
+learners understand, so beyond validating the system we conducted a controlled
+study with human participants. It asked one question: does a pseudo-haptic weight
+cue, added to direct manipulation in VR, change how accurately learners predict
+outcomes that depend on mass, density, and load, compared with the same
+manipulation without the cue? We report the study using the standard structure of
+participants, apparatus, procedure, and design.
 
-\textbf{Research question.} Does a pseudo-haptic weight cue, added to direct
-manipulation in VR, change how accurately learners predict outcomes that depend
-on mass, density, and load, compared with the same manipulation without the cue?
+\subsection{Participants}
+Twelve participants (the class minimum for a repeated-measures design) were
+recruited from non-physics courses, targeting students who had not taken
+university physics so that measurable misconceptions were present to begin with.
+Recruitment used the standard class data-collection form. The project was not
+intended for outside publication, so no IRB submission was required; were
+publication pursued later, an IRB with a faculty principal investigator would be
+arranged before any recruitment began. Participation took about 40 minutes, and
+participants could stop at any time.
 
-\textbf{Design.} A within-subjects experiment with one independent variable, the
-\emph{weight cue} (on vs.\ off), counterbalanced in order across participants. In
-the cue-on build, control-to-display gain and visual lag track an object's mass
-and the lever's load; the cue-off build uses plain grab-and-place with identical
-visuals. Two matched scenario sets, A and B, are constructed so that no
-participant sees the same scene twice, and set is counterbalanced against cue
-condition. Held objects are made kinematic while grasped, the cue is applied to
-the object's displayed position, and the object is handed back to the physics
-engine on release, so that the simulation and the cue never fight each other.
+\subsection{Apparatus}
+The study used a Meta Quest~2 running the sandbox described above, built in
+Unity~6 with the XR Interaction Toolkit and OpenXR. Two builds were prepared that
+were visually identical and differed only in the weight cue. In the cue-on build,
+control-to-display gain and visual lag tracked an object's mass and the lever's
+load, so that a heavier object felt heavier and a more heavily loaded lever felt
+harder to move; the cue-off build used plain grab-and-place with no such
+modulation. Held objects were made kinematic while grasped, the cue was applied
+to the displayed position, and each object was handed back to the physics engine
+on release, so that the simulation and the cue did not fight. Before any session,
+the prototype passed the validation checks of Section~\ref{sec:validation}:
+each scenario matched its closed-form prediction within 5\%, the cue was
+monotonic across the full range of materials and loads, and the scene held
+72\,Hz. The pre/post test, heaviness judgments, and questionnaire were
+administered on a laptop between VR blocks.
 
-\textbf{Dependent variables.} The primary measure is \emph{prediction accuracy}
-on a short misconception test administered before and after each block. The six
-items follow the style of the Force Concept
-Inventory~\cite{hestenes1992force}: which of two equal-mass blocks is larger,
-which floats, which slides farther down a ramp, where a lever balances, and two
-transfer items using materials not present in the sandbox. Secondary measures
-are: a two-alternative forced-choice heaviness judgment after each pair of blocks
-(which felt heavier), serving as a manipulation check that the cue is perceived at
-all; task completion time; and a five-item presence-and-comfort questionnaire
-after each block.
+\subsection{Procedure}
+Each participant completed a pre-test, then a short training scene to learn
+grab-and-place interaction, then two blocks of four scenes each (blocks covered
+same-mass block comparison, buoyancy in a tank, sliding on a ramp, and balancing
+a lever). Each block was followed by a post-test, and the session ended with a
+brief interview about what felt different between the two blocks. After each pair
+of blocks, participants also made a two-alternative forced-choice heaviness
+judgment (which block felt heavier) and completed a five-item
+presence-and-comfort questionnaire.
 
-\textbf{Procedure ($\approx$40 minutes).} Participants complete a pre-test, then a
-short training scene, then block~1 (four scenes) followed by post-test~1, then
-block~2 followed by post-test~2, and finally a brief interview on what felt
-different between the two blocks. Cue condition and scenario set are assigned so
-that order is counterbalanced across participants.
+\subsection{Design}
+The experiment was within subjects with one independent variable, the
+\emph{weight cue} (on vs.\ off). Cue order was counterbalanced across
+participants, and two matched scenario sets (A and B) were paired with the two
+cue conditions so that no participant saw the same scene twice; set was
+counterbalanced against cue condition.
 
-\textbf{Participants.} We recruit students who have not taken university physics,
-drawn from non-physics courses, so that measurable misconceptions are present to
-begin with. Because the design is within subjects, twelve participants are
-sufficient for the scope of this class. Recruitment uses the standard class
-data-collection form; this project is not intended for outside publication, so no
-IRB submission is required. Were publication pursued later, an IRB with a faculty
-principal investigator would be arranged before any recruitment began.
+The primary dependent variable was \emph{prediction accuracy} on a short
+misconception test given before and after each block. Its six items followed the
+style of the Force Concept Inventory~\cite{hestenes1992force}: which of two
+equal-mass blocks is larger, which floats, which slides farther down a ramp,
+where a lever balances, and two transfer items using materials not present in the
+sandbox. Secondary dependent variables were the forced-choice heaviness judgment
+(a manipulation check that the cue was perceived at all), task completion time,
+and the presence-and-comfort score.
 
-\textbf{Hypotheses.}
+We tested three hypotheses:
 \begin{itemize}
-  \item \textbf{H1:} the gain in prediction accuracy from pre-test to post-test is
-        larger with the cue on than with the cue off.
-  \item \textbf{H2:} heaviness judgments are above chance with the cue on and at
+  \item \textbf{H1:} the gain in prediction accuracy from pre-test to post-test
+        was larger with the cue on than with the cue off.
+  \item \textbf{H2:} heaviness judgments were above chance with the cue on and at
         chance with the cue off (the manipulation check).
-  \item \textbf{H3:} reported presence is higher with the cue on.
+  \item \textbf{H3:} reported presence was higher with the cue on.
 \end{itemize}
-
-\textbf{Analysis.} H1 is tested with a $2\times2$ repeated-measures ANOVA on
-accuracy (cue $\times$ pre/post), with the interaction term as the effect of
-interest. H2 is tested with a binomial test against chance for each condition. H3
-is tested with a paired $t$-test on the presence score.
+H1 was tested with a $2\times2$ repeated-measures ANOVA on accuracy (cue $\times$
+pre/post), with the interaction term as the effect of interest; H2 with a
+binomial test against chance in each condition; and H3 with a paired $t$-test on
+the presence score.
 
 \section{Deliverables}
 \label{sec:deliverables}
@@ -250,7 +267,7 @@ Toward the \textbf{early-December} presentation:
         pulley or projectile launcher) built on the same interaction and physics
         framework, delivered as two builds (cue on and cue off) for the study.
   \item The within-subjects study of Section~\ref{sec:methodology} run with
-        roughly twelve non-physics students, with the pre/post misconception
+        twelve non-physics students, with the pre/post misconception
         test, heaviness manipulation check, and presence questionnaire analyzed
         as described.
   \item A recorded demonstration video walking through each concept on-device.

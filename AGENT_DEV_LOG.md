@@ -43,6 +43,23 @@ Columns / fields per entry:
 
 ---
 
+### 2026-09-29 — Checkpoint 2 methodology restructure (updated instructions)
+- Task given: apply professor's updated checkpoint page and Teams message —
+  rewrite methodology in past tense as if the study was run, use the standard
+  Participants/Apparatus/Procedure/Design structure, confirm the 12-participant
+  repeated-measures minimum, and review Related Work as synthesis.
+- Produced: rewrote the Methodology section into the four standard subsections in
+  past tense; labeled the Prototype Validation section and fixed a cross-ref;
+  aligned one Related Work line with the mass-not-density cue; set the deliverable
+  participant count to twelve. Refreshed CS567-Checkpoint2-Skoglund.pdf.
+- Built? Yes — pdflatex + bibtex, 3 passes, no undefined refs, no errors, 5 pages.
+- Human correction needed: caught and fixed a broken cross-reference the agent
+  first introduced (pointed at an unlabeled section).
+- Notes: Related Work already reads as thematic synthesis rather than a summary
+  list, so it was left largely intact per the CHI writing guides.
+
+---
+
 ## Template (copy for each new entry)
 
 ### YYYY-MM-DD HH:MM — <short task title>
