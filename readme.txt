@@ -8,7 +8,7 @@ in a private/incognito tab so you know it is truly accessible)
 ====================================================================
 
 Status video (3-5 min, YouTube unlisted):
-  <PASTE_YOUTUBE_UNLISTED_LINK>
+  https://youtu.be/ywl5PZBO41Y
 
 Code/prototype video (3-5 min, YouTube unlisted):
   <NOT YET — no code exists at Checkpoint 2. Add when the prototype runs.>
