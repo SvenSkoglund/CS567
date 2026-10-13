@@ -216,151 +216,188 @@ namespace PhysicsSandbox
         IEnumerator Run()
         {
             var rest = new Vector3(0.1f, 1.25f, 0.3f);
+            var wide = new Vector3(-0.10f, 1.62f, -0.62f);
+            var wideLook = new Vector3(-0.10f, 1.00f, 0.60f);
             m_Hand.SetPositionAndRotation(rest, Quaternion.identity);
-            m_Camera.SetPositionAndRotation(new Vector3(-0.10f, 1.60f, -0.55f), Quaternion.LookRotation(new Vector3(0f, -0.45f, 1f)));
+            m_Camera.SetPositionAndRotation(wide, Quaternion.LookRotation(wideLook - wide));
 
             if (m_Narrated)
             {
                 Mark("Title card");
                 yield return Card("Physics You Can Feel",
-                    "A Pseudo-Haptic VR Sandbox for Experiencing\nMechanics and Material Properties\n\n" +
-                    "<color=#F2A65A>CS 567  ·  Checkpoint 3: prototype video</color>\n" +
-                    "Sven Skoglund  ·  group CS567_SVEN", 22f);
+                    "A VR sandbox where virtual objects feel heavy\n\n" +
+                    "<color=#F2A65A>CS 567  ·  Checkpoint 3 prototype</color>\n" +
+                    "Sven Skoglund", 7f);
 
                 Mark("Status card");
-                yield return Card("Where the project stands", Bullets(
-                    "Checkpoints 1 and 2: proposal, related work, and the study design",
-                    "Today: the first working prototype",
-                    "Unity 6, XR Interaction Toolkit, OpenXR, C#",
-                    "Shown here in the Unity editor, with the XR simulator standing in\n     for the headset and controllers",
-                    "Next: the same scene on the Quest 2",
-                    "Built with an AI coding agent, logged task by task"), 38f);
+                yield return Card("Where things stand", Bullets(
+                    "The proposal and study design are done",
+                    "This is the first working prototype",
+                    "It runs in the Unity editor with a simulated headset",
+                    "Next: run it on the Quest 2"), 14f);
 
                 Mark("Scene overview");
-                m_Caption = "Same-mass set: 1 kg each of pine, ice, aluminum and steel.\nThe denser the material, the smaller the block.";
-                yield return Frame(new Vector3(-0.80f, 1.52f, -0.18f), new Vector3(-0.78f, 0.98f, 0.50f), 1.8f);
-                yield return new WaitForSeconds(5f);
-                m_Caption = "Same-size set: 1 litre each, from 0.5 kg of pine to 7.85 kg of steel.";
-                yield return Frame(new Vector3(-0.10f, 1.52f, -0.18f), new Vector3(-0.10f, 0.98f, 0.50f), 1.8f);
-                yield return new WaitForSeconds(4.5f);
+                m_Caption = "Same mass: 1 kg each. Denser materials make smaller blocks.";
+                yield return Frame(new Vector3(-0.80f, 1.52f, -0.18f), new Vector3(-0.78f, 0.98f, 0.50f), 1.6f);
+                yield return new WaitForSeconds(3.5f);
+                m_Caption = "Same size: 1 litre each. Very different masses.";
+                yield return Frame(new Vector3(-0.10f, 1.52f, -0.18f), new Vector3(-0.10f, 0.98f, 0.50f), 1.6f);
+                yield return new WaitForSeconds(3.5f);
                 if (m_Lever != null)
                 {
-                    m_Caption = "A lever, marked in centimetres from the pivot.";
-                    yield return Frame(new Vector3(-0.38f, 1.48f, 0.10f), m_Lever.transform.position, 1.8f);
-                    yield return new WaitForSeconds(3.5f);
+                    m_Caption = "A lever.";
+                    yield return Frame(new Vector3(-0.38f, 1.48f, 0.10f), m_Lever.transform.position, 1.6f);
+                    yield return new WaitForSeconds(2.5f);
                 }
 
                 if (m_Water != null)
                 {
-                    m_Caption = "A water tank for float-or-sink.";
-                    yield return Frame(new Vector3(0.50f, 1.60f, -0.15f), m_Water.transform.position, 1.8f);
-                    yield return new WaitForSeconds(3.5f);
+                    m_Caption = "A water tank.";
+                    yield return Frame(new Vector3(0.50f, 1.60f, -0.15f), m_Water.transform.position, 1.6f);
+                    yield return new WaitForSeconds(2.5f);
                 }
 
-                m_Caption = "A readout panel: what is held, the live cue values, and the lever and tank outcomes.";
-                yield return Frame(new Vector3(0.36f, 1.55f, 0.15f), new Vector3(0.45f, 1.60f, 1.35f), 1.8f);
-                yield return new WaitForSeconds(4.5f);
+                m_Caption = "A panel that shows what is happening.";
+                yield return Frame(new Vector3(0.36f, 1.55f, 0.15f), new Vector3(0.45f, 1.60f, 1.35f), 1.6f);
+                yield return new WaitForSeconds(3.5f);
             }
 
             // 1. Same size, different mass: the cue alone tells the blocks apart.
-            Mark("Same size, different mass: four lifts with the cue on");
+            Mark("Cue ON: four same-size blocks lifted (pine, ice, aluminum, steel)");
             yield return Frame(new Vector3(-0.10f, 1.52f, -0.28f), new Vector3(-0.10f, 1.02f, 0.52f), 1.2f);
-            m_Caption = "Four blocks of the same size, 1 litre each. The hand lifts each one 30 cm.\n" +
-                "The orange wireframe is where the hand really is. Heavier blocks rise less and lag more.";
-            yield return new WaitForSeconds(Pick(2.5f, 5f));
+            m_Caption = "Same size, different mass. The hand lifts each block 30 cm.\n" +
+                "The orange line is the gap between the hand and the block. Heavier blocks lag more.";
+            yield return new WaitForSeconds(Pick(2.5f, 4f));
             foreach (var material in MaterialLibrary.All)
                 yield return LiftAndLower(FindLitre(material));
 
             // 2. Cue off: the control condition of the study.
-            Mark("Cue off: steel again, one-to-one");
-            m_Caption = "Weight cue OFF (the study's control condition).\nThe same 7.85 kg steel block now follows the hand one-to-one.";
+            Mark("Cue OFF: the same lifts, one-to-one");
+            m_Caption = "Weight cue OFF. Now every block follows the hand exactly.";
             PseudoHapticSettings.CueEnabled = false;
-            yield return new WaitForSeconds(Pick(1.5f, 4f));
-            yield return LiftAndLower(FindLitre(MaterialLibrary.Steel));
+            yield return new WaitForSeconds(Pick(1.5f, 3f));
+            if (m_Narrated)
+            {
+                foreach (var material in MaterialLibrary.All)
+                    yield return LiftAndLower(FindLitre(material));
+            }
+            else
+            {
+                yield return LiftAndLower(FindLitre(MaterialLibrary.Steel));
+            }
+
             PseudoHapticSettings.CueEnabled = true;
 
             // 3. Same mass, different size: the cue must not change with density.
-            Mark("Same mass, different size: pine and steel, 1 kg each");
+            Mark("Same mass, different size: all get the same cue");
             yield return Frame(new Vector3(-0.72f, 1.50f, -0.22f), new Vector3(-0.76f, 1.02f, 0.52f), 1.2f);
-            m_Caption = "Four blocks of the same mass, 1 kg each. Denser material, smaller block.\n" +
-                "Pine and steel get the same cue, because the cue tracks mass, not density.";
-            yield return new WaitForSeconds(Pick(2.5f, 5f));
-            yield return LiftAndLower(Find(MaterialLibrary.Pine, 1f));
-            yield return LiftAndLower(Find(MaterialLibrary.Steel, 1f));
+            m_Caption = "Same mass, different size. They all get the same cue,\nbecause the cue follows mass, not size.";
+            yield return new WaitForSeconds(Pick(2.5f, 4f));
+            foreach (var material in MaterialLibrary.All)
+            {
+                if (m_Narrated || material.name == MaterialLibrary.Pine.name || material.name == MaterialLibrary.Steel.name)
+                    yield return LiftAndLower(Find(material, 1f));
+            }
 
             // 4. Buoyancy.
             if (m_Water != null)
             {
-                Mark("Water tank: pine, ice and steel");
+                Mark("Water tank: pine and ice float, aluminum and steel sink");
                 var water = m_Water.GetComponent<Collider>().bounds;
                 yield return Frame(new Vector3(water.center.x - 0.25f, 1.62f, -0.20f), new Vector3(water.center.x - 0.10f, water.center.y, water.center.z), 1.2f);
-                m_Caption = "Water tank. Each 1 kg block is carried over and released.\n" +
-                    "Pine floats half under, ice floats 92% under, steel sinks: the submerged fraction equals the density ratio.";
-                yield return new WaitForSeconds(Pick(0f, 2.5f));
-                var drops = new[] { MaterialLibrary.Pine, MaterialLibrary.Ice, MaterialLibrary.Steel };
+                m_Caption = "Water tank. Less dense than water floats. Denser sinks.";
+                yield return new WaitForSeconds(Pick(0f, 2f));
+
+                var drops = m_Narrated
+                    ? new[] { MaterialLibrary.Pine, MaterialLibrary.Ice, MaterialLibrary.Aluminum, MaterialLibrary.Steel }
+                    : new[] { MaterialLibrary.Pine, MaterialLibrary.Ice, MaterialLibrary.Steel };
+                var offsets = m_Narrated ? new[] { -0.165f, -0.035f, 0.075f, 0.165f } : new[] { -0.155f, 0f, 0.155f };
                 for (var i = 0; i < drops.Length; i++)
                 {
                     var block = Find(drops[i], 1f);
-                    var target = new Vector3(water.center.x + (i - 1) * 0.155f, water.max.y + block.SideM * 0.5f + 0.02f, water.center.z);
-                    yield return CarryTo(block, target);
+                    yield return CarryTo(block, new Vector3(water.center.x + offsets[i], water.max.y + block.SideM * 0.5f + 0.02f, water.center.z));
                 }
 
-                yield return new WaitForSeconds(Pick(4f, 6f));
+                yield return new WaitForSeconds(Pick(4f, 7f));
             }
 
             // 5. Law of the lever.
             if (m_Lever != null)
             {
-                Mark("Lever: aluminum on the left, then ice balances it");
+                Mark("Lever 1: aluminum left, ice too close, then ice balances");
                 var pivot = m_Lever.transform.position;
                 var top = pivot.y + 0.01f;
                 yield return Frame(new Vector3(pivot.x, 1.50f, 0.02f), new Vector3(pivot.x, top, pivot.z), 1.2f);
 
                 var aluminum = FindLitre(MaterialLibrary.Aluminum);
                 var ice = FindLitre(MaterialLibrary.Ice);
+                var steel = FindLitre(MaterialLibrary.Steel);
                 const float aluminumArm = 0.10f;
                 var iceArm = PhysicsFormulas.BalancingArmM(aluminum.MassKg, aluminumArm, ice.MassKg);
 
-                m_Caption = "Lever. 2.7 kg of aluminum goes 10 cm left of the pivot, and the plank tips.";
-                yield return new WaitForSeconds(Pick(0f, 2f));
-                yield return CarryTo(aluminum, new Vector3(pivot.x - aluminumArm, top + aluminum.SideM * 0.5f + 0.025f, pivot.z));
-                yield return new WaitForSeconds(Pick(2.5f, 4f));
+                Vector3 OnPlank(PhysicsBlock block, float arm) =>
+                    new Vector3(pivot.x + arm, top + block.SideM * 0.5f + 0.035f, pivot.z);
 
-                m_Caption = $"0.92 kg of ice balances it at {iceArm * 100f:0.0} cm on the right,\n" +
-                    $"because 2.7 kg x 10 cm = 0.917 kg x {iceArm * 100f:0.0} cm.";
-                yield return CarryTo(ice, new Vector3(pivot.x + iceArm, top + ice.SideM * 0.5f + 0.035f, pivot.z));
-                yield return new WaitForSeconds(Pick(5f, 8f));
+                m_Caption = "Lever. Aluminum, 2.7 kg, goes 10 cm left of the middle. It tips.";
+                yield return new WaitForSeconds(Pick(0f, 2f));
+                yield return CarryTo(aluminum, OnPlank(aluminum, -aluminumArm));
+                yield return new WaitForSeconds(Pick(2.5f, 3.5f));
+
+                if (m_Narrated)
+                {
+                    m_Caption = "Ice, 0.92 kg, at 20 cm on the right. Not far enough.";
+                    yield return CarryTo(ice, OnPlank(ice, 0.20f));
+                    yield return new WaitForSeconds(3f);
+                }
+
+                m_Caption = $"Ice at {iceArm * 100f:0.0} cm. Balanced: mass x distance is equal on both sides.";
+                yield return CarryTo(ice, OnPlank(ice, iceArm));
+                yield return new WaitForSeconds(Pick(5f, 7f));
+
+                if (m_Narrated)
+                {
+                    Mark("Lever 2: aluminum right, heavy steel close to the middle");
+                    const float steelArm = 0.05f;
+                    var farArm = PhysicsFormulas.BalancingArmM(steel.MassKg, steelArm, aluminum.MassKg);
+
+                    m_Caption = "One more. The ice goes back.";
+                    yield return CarryTo(ice, ice.HomePosition + Vector3.up * 0.02f);
+                    m_Caption = $"Aluminum moves to {farArm * 100f:0.0} cm on the right. It tips the other way.";
+                    yield return CarryTo(aluminum, OnPlank(aluminum, farArm));
+                    yield return new WaitForSeconds(3f);
+                    m_Caption = "Steel, 7.85 kg, goes just 5 cm left of the middle. Balanced again.";
+                    yield return CarryTo(steel, OnPlank(steel, -steelArm));
+                    yield return new WaitForSeconds(9f);
+                }
             }
 
             yield return MoveHand(rest, 0.8f);
 
             if (m_Narrated)
             {
+                Mark("Wide shot");
+                m_Caption = "The prototype so far.";
+                yield return Frame(wide, wideLook, 1.5f);
+                yield return new WaitForSeconds(4f);
                 m_Caption = "";
-                Mark("Validation card");
-                yield return Card("Checked against closed-form physics", Bullets(
-                    "Weight cue: steel, 7.85 kg, has a gain of 0.39.\n     A 5 cm hand lift moves the block 2 cm",
-                    "Cue off: the block tracks the hand one-to-one, with no jump when switched",
-                    "Buoyancy: submerged fraction equals the density ratio.\n     Pine 0.500, ice 0.917, steel sinks",
-                    "Lever: balanced at 2.65 against 2.67 N·m, a quarter of a degree of tilt",
-                    "15 unit tests: the cue never gets weaker as mass goes up"), 36f);
 
-                Mark("Agentic workflow card");
-                yield return Card("How it was built: agentic AI", Bullets(
-                    "An AI coding agent (Claude Code) wrote the C# and generates the scene from code",
-                    "It drives the open Unity editor through a small bridge:\n     compile, enter Play mode, take screenshots, read back numbers",
-                    "It tested its own work in Play mode and caught three of its own mistakes",
-                    "Human decisions: project setup, where to run it, what to cut",
-                    "Every task is recorded in AGENT_DEV_LOG.md",
-                    "The agent captured this recording too"), 38f);
+                Mark("Results card");
+                yield return Card("It matches the physics", Bullets(
+                    "Heavier blocks always lag more",
+                    "Floating depth matches density",
+                    "The lever balances when mass × distance is equal"), 12f);
+
+                Mark("AI agent card");
+                yield return Card("Built with an AI coding agent", Bullets(
+                    "The agent wrote the code and built the scene",
+                    "It ran and tested the prototype by itself",
+                    "I directed it and logged every task"), 14f);
 
                 Mark("Next steps card");
                 yield return Card("Next steps", Bullets(
-                    "Run on the Quest 2 through Link, then a standalone build at 72 Hz",
-                    "Add the ramp for friction, and a load-dependent cue on the lever",
-                    "Tune the cue strength with pilot users",
-                    "Log interactions to file",
-                    "Then the study: cue on against cue off, twelve participants"), 30f);
+                    "Run it on the Quest 2 headset",
+                    "Add a ramp for friction",
+                    "Run the user study"), 10f);
                 Mark("End");
             }
             else
@@ -390,7 +427,7 @@ namespace PhysicsSandbox
             yield return Grab(block);
             var start = m_Hand.position;
             yield return MoveHand(start + Vector3.up * k_LiftHeightM, Pick(1.0f, 1.3f));
-            yield return new WaitForSeconds(Pick(1.2f, 2.6f));
+            yield return new WaitForSeconds(Pick(1.2f, 3.6f));
             yield return MoveHand(start, Pick(1.0f, 1.3f));
             yield return new WaitForSeconds(Pick(0.7f, 0.9f));
             Release();
@@ -511,7 +548,7 @@ namespace PhysicsSandbox
         void DrawCard(float scale)
         {
             m_TitleStyle.fontSize = Mathf.RoundToInt(46f * scale);
-            m_BodyStyle.fontSize = Mathf.RoundToInt(25f * scale);
+            m_BodyStyle.fontSize = Mathf.RoundToInt(31f * scale);
             m_FooterStyle.fontSize = Mathf.RoundToInt(15f * scale);
 
             var margin = Screen.width * 0.09f;

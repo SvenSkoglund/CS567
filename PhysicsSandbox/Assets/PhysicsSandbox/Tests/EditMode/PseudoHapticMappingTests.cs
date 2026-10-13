@@ -78,6 +78,22 @@ namespace PhysicsSandbox.Tests
         }
 
         [Test]
+        public void SidewaysAndDownwardMotion_IsOneToOne([Values(0.5f, 2.7f, 7.85f)] float massKg)
+        {
+            // Weight pulls down, so the cue must not leave the object behind sideways or above the hand.
+            var sideways = new Vector3(0.6f, 0f, -0.3f);
+            Assert.AreEqual(sideways, PseudoHapticMapping.DisplayedDisplacement(sideways, massKg));
+
+            var down = new Vector3(0.2f, -0.4f, 0.1f);
+            Assert.AreEqual(down, PseudoHapticMapping.DisplayedDisplacement(down, massKg));
+
+            var lifted = PseudoHapticMapping.DisplayedDisplacement(new Vector3(0.6f, 0.3f, -0.3f), massKg);
+            Assert.AreEqual(0.6f, lifted.x, 1e-6f);
+            Assert.AreEqual(-0.3f, lifted.z, 1e-6f);
+            Assert.Less(lifted.y, 0.3f);
+        }
+
+        [Test]
         public void EqualMassBlocks_AreSmallerWhenDenser()
         {
             var previousSide = float.MaxValue;

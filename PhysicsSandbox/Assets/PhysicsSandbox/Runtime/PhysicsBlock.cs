@@ -29,6 +29,8 @@ namespace PhysicsSandbox
         public Rigidbody Rigidbody => m_Rigidbody != null ? m_Rigidbody : m_Rigidbody = GetComponent<Rigidbody>();
         public Collider Collider => m_Collider != null ? m_Collider : m_Collider = GetComponent<Collider>();
 
+        public Vector3 HomePosition => m_HomePosition;
+
         /// <summary>True while a hand holds the block (the grab makes it kinematic).</summary>
         public bool IsHeld => Rigidbody.isKinematic;
 

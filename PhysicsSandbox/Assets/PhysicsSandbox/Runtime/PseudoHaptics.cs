@@ -16,7 +16,7 @@ namespace PhysicsSandbox
         /// <summary>Gain applied to the heaviest object; the lightest gets 1 (no scaling).</summary>
         public const float MinGain = 0.35f;
 
-        /// <summary>Hand travel over which the gain shortfall levels off.</summary>
+        /// <summary>Lift height over which the gain shortfall levels off.</summary>
         public const float OffsetSaturationM = 0.25f;
 
         /// <summary>Lag time constant applied to the heaviest object; the lightest gets 0.</summary>
@@ -25,7 +25,7 @@ namespace PhysicsSandbox
         public static float Heaviness01(float massKg) =>
             Mathf.Clamp01(Mathf.Log(Mathf.Max(massKg, 1e-4f) / MinMassKg) / Mathf.Log(MaxMassKg / MinMassKg));
 
-        /// <summary>Displayed displacement per unit of hand displacement.</summary>
+        /// <summary>Displayed lift per unit of hand lift, near the grab point.</summary>
         public static float Gain(float massKg) => Mathf.Lerp(1f, MinGain, Heaviness01(massKg));
 
         /// <summary>Time constant of the first-order lag between hand and displayed object.</summary>
@@ -33,18 +33,19 @@ namespace PhysicsSandbox
 
         /// <summary>
         /// Where the object is displayed, relative to where it was grabbed, for a given hand
-        /// displacement. Near the grab point this is a plain control-to-display gain. Over a
-        /// long carry the shortfall levels off at (1 - gain) x <see cref="OffsetSaturationM"/>,
-        /// so a heavy object trails the hand by a bounded distance instead of drifting away.
+        /// displacement. Weight acts downward, so only lifting is scaled: the object hangs
+        /// below the hand by a shortfall that starts as a plain control-to-display gain and
+        /// levels off at (1 - gain) x <see cref="OffsetSaturationM"/>. Sideways and downward
+        /// motion is one-to-one, so the object ends level with the hand once the lag settles.
         /// </summary>
         public static Vector3 DisplayedDisplacement(Vector3 handDisplacement, float massKg)
         {
-            var distance = handDisplacement.magnitude;
-            if (distance < 1e-6f)
+            var lift = handDisplacement.y;
+            if (lift <= 0f)
                 return handDisplacement;
 
-            var shortfall = (1f - Gain(massKg)) * OffsetSaturationM * (float)System.Math.Tanh(distance / OffsetSaturationM);
-            return handDisplacement * ((distance - shortfall) / distance);
+            var shortfall = (1f - Gain(massKg)) * OffsetSaturationM * (float)System.Math.Tanh(lift / OffsetSaturationM);
+            return new Vector3(handDisplacement.x, lift - shortfall, handDisplacement.z);
         }
     }
 
@@ -71,7 +72,7 @@ namespace PhysicsSandbox
             }
         }
 
-        /// <summary>Debug overlay showing where the tracked hand really holds the object.</summary>
+        /// <summary>Debug overlay: a line from the tracked hand position to the displayed object.</summary>
         public static bool GhostEnabled
         {
             get => s_GhostEnabled;

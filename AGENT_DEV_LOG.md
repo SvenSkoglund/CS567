@@ -218,6 +218,33 @@ Columns / fields per entry:
 
 ---
 
+### 2026-10-12 20:05 — Author review of the first take: cue direction, overlay, pacing
+- Task given: after watching the first recording the author asked for three changes.
+  (1) The offset stayed sideways after a sideways move, "as if there is some
+  sideways gravity"; the block should end level with the hand. (2) Show the offset
+  as a single line, not a wireframe cube. (3) Shorter, simpler title cards and a
+  simpler script; the cards were on screen too long.
+- Produced: `PseudoHapticMapping.DisplayedDisplacement` now scales only upward
+  lift, so the block hangs below the hand and sideways or downward motion is
+  one-to-one once the lag settles. `PseudoHapticGhost` draws one line. The narrated
+  sequence was rewritten: cards cut from 2:44 to 0:57 with three or four short
+  bullets each, and the time moved into demonstration (all four blocks with the cue
+  off, all four same-mass blocks, four blocks in the tank, a second lever example).
+  New take: 5:08. Script rewritten in plain language against the new timeline.
+- Built? Yes — 18 unit tests pass (three new ones for sideways and downward
+  motion). Measured in Play mode with steel: after a 0.5 m sideways move the offset
+  settled to 0.0 cm; a 30 cm lift left it 12.7 cm below the hand; lowering returned
+  it to 0.0 cm.
+- Human correction needed: this entry is the correction. The agent's cue applied
+  the gain in every direction, which passed all of its own numeric checks and was
+  still wrong to look at. The author saw it within seconds of watching the video.
+- Notes: the agent kept the video just above five minutes because the assignment
+  asks for five to ten, and moved the time from cards to demonstration rather than
+  cutting the length. The cue now differs from a plain control-to-display gain in
+  two ways (vertical only, and levelling off with height); the paper needs to say so.
+
+---
+
 ## Template (copy for each new entry)
 
 ### YYYY-MM-DD HH:MM — <short task title>

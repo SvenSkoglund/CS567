@@ -31,8 +31,9 @@ workbench holding:
 - A same-mass block set (pine, ice, aluminum, steel, 1 kg each). Size alone shows
   density: the steel cube is 5 cm, the pine cube 12.6 cm.
 - A same-size block set (1 litre each, 0.5 kg to 7.85 kg). The pseudo-haptic weight
-  cue tells them apart: a heavier block follows the hand with a lower
-  control-to-display gain and more lag. The cue tracks mass, not density.
+  cue tells them apart: when lifted, a heavier block rises less than the hand
+  (a lower control-to-display gain) and lags more. The cue tracks mass, not
+  density.
 - A lever with centimetre marks. The panel shows the torque on each side and
   reports when the plank balances.
 - A water tank. Blocks float or sink by density, at the depth Archimedes predicts.
@@ -63,7 +64,7 @@ RUNNING THE PROTOTYPE
 Controls:
   Grab a block            grip button            (simulator: hold G)
   Toggle the weight cue   right A button         (keyboard: P)
-  Toggle the hand ghost   right B button         (keyboard: O)
+  Toggle the offset line  right B button         (keyboard: O)
   Reset the blocks        left X button          (keyboard: Backspace)
   Scripted demo           simulator only         (keyboard: N to start or stop)
   Simulator movement      W A S D, Q/E down/up, right mouse button to look,

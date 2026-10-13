@@ -98,7 +98,7 @@ namespace PhysicsSandbox
 
             sb.Append("<b>PHYSICS YOU CAN FEEL</b>  <size=70%>prototype</size>\n");
             sb.Append("Weight cue: ").Append(OnOff(PseudoHapticSettings.CueEnabled)).Append("   <size=70%>[P / A button]</size>\n");
-            sb.Append("Hand ghost: ").Append(OnOff(PseudoHapticSettings.GhostEnabled)).Append("   <size=70%>[O / B button]</size>\n");
+            sb.Append("Offset line: ").Append(OnOff(PseudoHapticSettings.GhostEnabled)).Append("   <size=70%>[O / B button]</size>\n");
             sb.Append("<size=70%>Reset blocks: [Backspace / X button]");
             if (SimulatorAutoLoader.SimulatorActive)
                 sb.Append("   Scripted demo: [N]");

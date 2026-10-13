@@ -8,9 +8,9 @@ namespace PhysicsSandbox
     /// <summary>
     /// Grab transformer that renders weight without force hardware. The base class computes
     /// where the object would be under one-to-one tracking; this class then displays it at
-    /// a position whose displacement is scaled by a mass-dependent control-to-display gain
-    /// (levelling off over long carries) and smoothed by a mass-dependent lag, so a heavier
-    /// object trails the hand more.
+    /// a position whose lift is scaled by a mass-dependent control-to-display gain (levelling
+    /// off with height) and whose motion is smoothed by a mass-dependent lag, so a heavier
+    /// object hangs lower and trails the hand more.
     /// With the cue disabled the object tracks the hand exactly.
     /// </summary>
     public class PseudoHapticGrabTransformer : XRGeneralGrabTransformer

@@ -1,93 +1,82 @@
 # Checkpoint 3 voice-over script
 
-For `checkpoint3-demo-silent.mp4` (5:24, 1080p, no audio).
+For `checkpoint3-demo-silent.mp4` (5:08, 1080p, no audio).
 
-Each section starts when the screen changes to what the heading describes. The
-word counts leave a few seconds of slack at a normal speaking pace, so there is no
-need to rush. If you fall behind, drop the sentences in *italics*.
+Start each part when the screen changes to what the heading describes. During the
+demo parts it is fine to stop talking and let the video play; the on-screen
+captions carry it.
 
 ---
 
-## 0:00 – 0:22 · Title card
+## 0:00 · Title card (7 seconds)
 
-Hi, I'm Sven Skoglund, and this is the Checkpoint 3 prototype video for my CS 567
-project, Physics You Can Feel. It's a VR sandbox that uses pseudo-haptic cues, so
-virtual objects feel like they have weight even though the controller never gets
-heavier.
+Hi, I'm Sven. This is my Checkpoint 3 prototype for Physics You Can Feel.
 
-## 0:22 – 1:00 · "Where the project stands"
+## 0:07 · "Where things stand" (14 seconds)
 
-Quick status first. Checkpoints one and two covered the proposal, the related
-work, and the study design. This checkpoint is the first working prototype. It's
-built in Unity 6 with the XR Interaction Toolkit and OpenXR. What you'll see is
-running live in the Unity editor, with Unity's XR simulator standing in for the
-headset and controllers. Getting the same scene onto the Quest 2 is the next step.
-*I built it with an AI coding agent, and I'll come back to that at the end.*
+My proposal and study design are done. This is the first working prototype. It
+runs in the Unity editor with a simulated headset. Running it on the Quest 2 is
+next.
 
-## 1:00 – 1:30 · Camera pans across the workbench
+## 0:21 · Camera moves across the workbench (24 seconds)
 
-Here's the sandbox. On the left is a same-mass set: one kilogram each of pine,
-ice, aluminum and steel, so the denser materials are smaller. Next to it is a
-same-size set, one litre each, from half a kilogram up to almost eight. Behind
-them is a lever, then a water tank, and a panel that shows what's being held and
-what the physics is doing.
+This is the sandbox. These four blocks all have the same mass, so the denser ones
+are smaller. These four are the same size, but very different masses. There is a
+lever, a water tank, and a panel that shows what is happening.
 
-## 1:30 – 2:07 · Four lifts, cue on (pine, ice, aluminum, steel)
+## 0:45 · Cue ON: pine, ice, aluminum, steel are lifted (40 seconds)
 
-This is the main idea. A scripted hand lifts each same-size block by thirty
-centimetres, using the same grab code a person would. The orange wireframe is
-where the hand really is, and the solid block is what you see. Pine nearly keeps
-up. Ice and aluminum fall a bit behind. Steel rises the least and lags the most.
-Your eyes see the block trailing your hand, and that reads as weight.
+Here is the main idea. A scripted hand lifts each block the same distance. The
+orange line shows the gap between the hand and the block. Pine is light, so it
+stays close to the hand. Ice and aluminum hang a little lower. Steel is the
+heaviest, so it hangs the lowest and moves the slowest. Seeing the block lag
+behind your hand is what makes it feel heavy.
 
-## 2:07 – 2:19 · Steel again, cue off
+## 1:25 · Cue OFF: the same four lifts (37 seconds)
 
-With the cue switched off, the same steel block follows the hand exactly. That's
-the control condition in my study.
+Now the cue is turned off. Every block follows the hand exactly. Pine and steel
+look the same, so nothing feels heavy. Same blocks, same lifts; only the cue
+changed. This is the comparison I will use in my study: cue on against cue off.
 
-## 2:19 – 2:41 · Same-mass set: pine, then steel
+## 2:02 · Same-mass blocks are lifted (40 seconds)
 
-Now the same-mass set. Pine and steel are very different sizes, but both are one
-kilogram, so they get the same cue. The cue follows mass, not density. Density
-shows up as size instead.
+These four blocks are different sizes, but each one has a mass of one kilogram.
+So they all get the same cue. The cue follows mass, not size. A small steel block
+and a big pine block feel the same here. The size is how you see density.
 
-## 2:41 – 3:10 · Water tank
+## 2:43 · Water tank (36 seconds)
 
-Density also decides what floats. Each one-kilogram block goes into the tank. Pine
-floats half under water, ice floats about ninety-two percent under, and steel
-sinks. Those fractions match each material's density divided by the density of
-water.
+Density also decides what floats. Each block goes into the water. Pine floats
+high. Ice floats low, mostly under water. Aluminum and steel are denser than
+water, so they sink. How deep each one floats matches its density.
 
-## 3:10 – 3:40 · Lever
+## 3:19 · Lever, first example (36 seconds)
 
-Last, the lever. Two point seven kilograms of aluminum goes ten centimetres left
-of the pivot, and the plank tips. Then about nine tenths of a kilogram of ice goes
-at twenty-nine centimetres on the right. Mass times distance now matches on both
-sides, and the panel reports that it's balanced.
+Now the lever. Aluminum goes on the left, and the lever tips. Ice is lighter. At
+twenty centimetres, it is not enough. So it moves out to about twenty-nine
+centimetres, and now the lever balances.
 
-## 3:40 – 4:16 · "Checked against closed-form physics"
+## 3:55 · Lever, second example (32 seconds)
 
-I checked each of these against the textbook formula. For steel the gain is zero
-point three nine, so a five centimetre hand lift moves the block two centimetres.
-With the cue off, tracking is one to one. The floating depths match the density
-ratios to three decimal places. The lever balanced with the two torques within
-about one percent. *There are also fifteen unit tests that make sure a heavier
-object never gets a weaker cue.*
+One more example. The ice goes back, and aluminum moves to the right side. Then
+steel, which is much heavier, goes very close to the middle. It balances again. A
+heavy block close in balances a lighter block farther out.
 
-## 4:16 – 4:54 · "How it was built: agentic AI"
+## 4:26 · Wide shot (6 seconds)
 
-The agentic AI part of this project is how it was built. An AI coding agent,
-Claude Code, wrote the C sharp scripts and generates the whole scene from code. It
-drives my open Unity editor through a small bridge, so it can compile, enter Play
-mode, take screenshots and read numbers back. That let it test its own work, and
-it caught three of its own mistakes. I decided the project setup, where to run it,
-and what to cut. *Every task is in the development log, and the agent captured
-this recording too.*
+That is the prototype so far.
 
-## 4:54 – 5:24 · "Next steps"
+## 4:32 · "It matches the physics" (12 seconds)
 
-Next, I'll run this on the Quest 2, first through Link and then as a standalone
-build at seventy-two hertz. I'll add the ramp for friction and a cue on the lever
-that depends on its load, tune the cue strength with pilot users, and add logging.
-After that comes the study: cue on against cue off, with twelve participants.
+I checked the numbers. Heavier blocks always lag more, floating matches density,
+and the lever balances where the math says it should.
+
+## 4:44 · "Built with an AI coding agent" (14 seconds)
+
+I built this with an AI coding agent. It wrote the code and tested the prototype
+by itself. I directed it and logged every task.
+
+## 4:58 · "Next steps" (10 seconds)
+
+Next: run it on the Quest 2, add a ramp for friction, and run the user study.
 Thanks for watching.
