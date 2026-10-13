@@ -1,66 +1,82 @@
 CS 567 — Physics You Can Feel: A Pseudo-Haptic VR Sandbox
 Sven Skoglund (group CS567_SVEN)
-Checkpoint 2 — Methodology and Study Design
+Checkpoint 3 — Prototype video
 
 ====================================================================
-REQUIRED LINKS  (fill in before submitting; confirm each video opens
-in a private/incognito tab so you know it is truly accessible)
+REQUIRED LINK  (confirm it opens in a private/incognito tab)
 ====================================================================
 
-Status video (3-5 min, YouTube unlisted):
-  https://youtu.be/ywl5PZBO41Y
+Prototype video (5-10 min, YouTube unlisted):
+  <PASTE_PROTOTYPE_VIDEO_LINK>
 
-Code/prototype video (3-5 min, YouTube unlisted):
-  <NOT YET — no code exists at Checkpoint 2. Add when the prototype runs.>
-
-Overleaf project:
-  <PASTE_OVERLEAF_PROJECT_LINK>
+====================================================================
+OTHER LINKS
+====================================================================
 
 GitHub repository:
   https://github.com/SvenSkoglund/CS567
 
-Paper PDF (in this submission and in the repo):
+Checkpoint 2 status video (YouTube unlisted):
+  https://youtu.be/ywl5PZBO41Y
+
+Paper PDF (unchanged since Checkpoint 2):
   CS567-Proposal-Template-LaTeX/CS567-Checkpoint2-Skoglund.pdf
 
 ====================================================================
-CHECKPOINT 2 CHANGES SINCE CHECKPOINT 1
+WHAT THE PROTOTYPE DOES
 ====================================================================
-- Added Methodology and Study Design section: within-subjects study of the
-  pseudo-haptic weight cue (on vs. off), pre/post misconception test in the
-  style of the Force Concept Inventory, heaviness manipulation check, presence
-  questionnaire, ~12 non-physics participants, class data-collection form
-  (no IRB; not for outside publication).
-- Corrected the core cue: it tracks MASS (and lever LOAD), not density.
-  Density is shown through equal-mass block volume and float/sink, not felt as
-  weight. This removes the misconception the earlier draft would have taught.
-- Reframed the old "Evaluation Plan" as "Prototype Validation" (closed-form
-  physics checks within 5%, monotonic cue, 72 Hz on Quest 2), which now feeds
-  the human study rather than replacing it.
-- Citations: removed the misread Kim 2022; corrected Georgiou and Makransky
-  claims to match what those papers found; added three verified references
-  (Dominjon 2005, Rietzler 2018, Hestenes 1992 / Force Concept Inventory).
-- Started the agentic-AI development log (AGENT_DEV_LOG.md), per feedback that
-  it must be kept from day one.
+One Unity scene (PhysicsSandbox/Assets/PhysicsSandbox/Scenes/Sandbox.unity) with a
+workbench holding:
+
+- A same-mass block set (pine, ice, aluminum, steel, 1 kg each). Size alone shows
+  density: the steel cube is 5 cm, the pine cube 12.6 cm.
+- A same-size block set (1 litre each, 0.5 kg to 7.85 kg). The pseudo-haptic weight
+  cue tells them apart: a heavier block follows the hand with a lower
+  control-to-display gain and more lag. The cue tracks mass, not density.
+- A lever with centimetre marks. The panel shows the torque on each side and
+  reports when the plank balances.
+- A water tank. Blocks float or sink by density, at the depth Archimedes predicts.
+- A readout panel with the held block's properties, the live cue parameters, and
+  the lever and tank outcomes.
+
+Checked against closed-form physics in Play mode: displayed lift equals gain x hand
+lift, submerged fraction equals density ratio (pine 0.500, ice 0.917), and the
+lever balances when the torques match. 15 unit tests cover cue monotonicity.
+
+Not in this checkpoint: the ramp, the pulley, hand tracking, file logging, and a
+standalone Quest build. The prototype runs in the Unity editor, either through
+Quest Link or with the keyboard-and-mouse XR simulator.
 
 ====================================================================
-BUILDING THE PAPER
+RUNNING THE PROTOTYPE
 ====================================================================
-Overleaf (recommended; Overleaf Professional is free for CSU students):
-  1. New Project -> Upload Project -> the LaTeX folder (or its zip).
-  2. Menu -> Compiler: pdfLaTeX. Main document: main.tex.
-  3. Recompile.
+1. Open the PhysicsSandbox folder in Unity 6000.4.7f1 (Unity Hub -> Add).
+2. Open Assets/PhysicsSandbox/Scenes/Sandbox.unity and press Play.
+3. With a headset connected through Quest Link the scene runs in VR. Without one,
+   the XR Interaction Simulator starts automatically.
 
-Local:
-  cd CS567-Proposal-Template-LaTeX
-  pdflatex main.tex && bibtex main && pdflatex main.tex && pdflatex main.tex
-  (needs the acmart class; TeX Live 2020 or newer)
+Controls:
+  Grab a block            grip button            (simulator: hold G)
+  Toggle the weight cue   right A button         (keyboard: P)
+  Toggle the hand ghost   right B button         (keyboard: O)
+  Reset the blocks        left X button          (keyboard: Backspace)
+  Scripted demo           simulator only         (keyboard: N to start or stop)
+  Simulator movement      W A S D, Q/E down/up, right mouse button to look,
+                          Tab to switch between head and controllers
 
-Files:
-  readme.txt                                       this file (submission links)
-  AGENT_DEV_LOG.md                                 agentic-AI development log
-  CS567-Proposal-Template-LaTeX/main.tex           the paper
-  CS567-Proposal-Template-LaTeX/related-work.tex   related work section
-  CS567-Proposal-Template-LaTeX/references.bib     bibliography (verified)
-  CS567-Proposal-Template-LaTeX/*.jpeg             figures
-  CS567-Proposal-Template-LaTeX/CS567-Checkpoint1-Skoglund.pdf   Checkpoint 1 PDF
-  CS567-Proposal-Template-LaTeX/CS567-Checkpoint2-Skoglund.pdf   Checkpoint 2 PDF
+To regenerate the scene from code: menu CS567 -> Build Sandbox Scene.
+
+====================================================================
+FILES
+====================================================================
+  readme.txt                                  this file
+  AGENT_DEV_LOG.md                            agentic-AI development log
+  PhysicsSandbox/                             Unity project
+  PhysicsSandbox/Assets/PhysicsSandbox/       our code, scene, materials and tests
+    Runtime/                                  cue, blocks, lever, buoyancy, panel
+    Editor/                                   scene builder, self-test, test runner
+    AgentBridge/                              lets the AI coding agent drive the editor
+    Tests/EditMode/                           unit tests
+  CS567-Proposal-Template-LaTeX/              paper source and PDFs
+
+Building the paper: see CS567-Proposal-Template-LaTeX/README.txt.
