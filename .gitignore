@@ -35,3 +35,4 @@ ProjectProposalFeedback.rtf
 # Recorded videos are uploaded, not committed
 /video/*.mp4
 /video/*.status.txt
+/*.mp3

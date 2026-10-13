@@ -7,7 +7,7 @@ REQUIRED LINK  (confirm it opens in a private/incognito tab)
 ====================================================================
 
 Prototype video (5-10 min, YouTube unlisted):
-  <PASTE_PROTOTYPE_VIDEO_LINK>
+  https://youtu.be/BbeIqTUpn2Y
 
 ====================================================================
 OTHER LINKS
