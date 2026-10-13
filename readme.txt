@@ -39,9 +39,14 @@ workbench holding:
 - A readout panel with the held block's properties, the live cue parameters, and
   the lever and tank outcomes.
 
-Checked against closed-form physics in Play mode: displayed lift equals gain x hand
-lift, submerged fraction equals density ratio (pine 0.500, ice 0.917), and the
-lever balances when the torques match. 15 unit tests cover cue monotonicity.
+Checked against closed-form physics in Play mode: displayed lift follows the gain
+mapping (steel, gain 0.39: a 5 cm hand lift moves the block 2 cm), submerged
+fraction equals density ratio (pine 0.500, ice 0.917), and the lever balances when
+the torques match. 15 unit tests cover cue monotonicity.
+
+The video shows the scripted demo: a scripted hand drives the same grab pipeline a
+person would, in the Unity editor with the XR simulator. It was captured from the
+Game view by Editor/SandboxRecorder.cs.
 
 Not in this checkpoint: the ramp, the pulley, hand tracking, file logging, and a
 standalone Quest build. The prototype runs in the Unity editor, either through

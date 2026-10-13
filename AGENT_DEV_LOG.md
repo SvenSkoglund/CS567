@@ -195,6 +195,29 @@ Columns / fields per entry:
 
 ---
 
+### 2026-10-12 19:45 — Recording the prototype video from the editor
+- Task given: "record the video demonstration, and give me a basic script to record
+  voice over it." The loaner headset could not be used that night (a former
+  student's account was still on it), so the recording is of the simulator.
+- Produced: a narrated mode in `Runtime/DemoDirector.cs` (title, status, validation,
+  workflow and next-steps cards, a camera pan across the bench, longer holds),
+  `Runtime/GameViewRecorder.cs` (pipes Game view frames to ffmpeg with game time
+  locked to 30 fps), and `Editor/SandboxRecorder.cs` (sets the Game view to 1080p,
+  starts the demo, stops when it ends, writes the segment timeline). Output:
+  `video/checkpoint3-demo-silent.mp4`, 5:24 at 1920x1080, and
+  `video/voiceover-script.md` timed against the recorded timeline.
+- Built? Yes — compiled first time. A 30-second test take confirmed size, colour and
+  orientation before the full take. The agent reviewed the result by extracting
+  frames into a contact sheet.
+- Human correction needed: none on the code. The author still has to record the
+  voice-over and check the video end to end.
+- Notes: the first full take had the idle left controller floating mid-shot; the
+  agent hid it and re-recorded. Capturing inside Unity rather than recording the
+  screen meant nothing from the desktop could end up in the video. Capture ran
+  faster than real time, so each full take cost about two minutes.
+
+---
+
 ## Template (copy for each new entry)
 
 ### YYYY-MM-DD HH:MM — <short task title>

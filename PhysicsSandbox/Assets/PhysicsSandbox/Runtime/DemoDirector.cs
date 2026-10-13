@@ -13,26 +13,39 @@ namespace PhysicsSandbox
     /// Scripted walkthrough for desktop recordings. Press N in simulator mode and the right
     /// hand performs each lesson on its own, with a caption explaining what is shown. It
     /// drives the same interactor and grab pipeline a person would, so what the recording
-    /// shows is the real cue, not an animation.
+    /// shows is the real cue, not an animation. The narrated variant adds title cards and
+    /// longer holds so a voice-over fits.
     /// </summary>
     public class DemoDirector : MonoBehaviour
     {
         const float k_LiftHeightM = 0.30f;
         const float k_ServoRate = 6f;
+        const string k_Bullet = "•  ";
+        const string k_BulletGap = "\n<size=40%> </size>\n";
 
         [SerializeField] Lever m_Lever;
         [SerializeField] WaterVolume m_Water;
 
-        readonly List<Behaviour> m_SuspendedDrivers = new List<Behaviour>();
+        readonly List<Behaviour> m_Suspended = new List<Behaviour>();
+        readonly List<string> m_Timeline = new List<string>();
         InputAction m_Toggle;
         Coroutine m_Run;
         NearFarInteractor m_Interactor;
         Transform m_Hand;
         Transform m_Camera;
         PhysicsBlock m_Held;
+        bool m_Narrated;
+        float m_StartTime;
         string m_Caption = "";
+        string m_CardTitle;
+        string m_CardBody;
         GUIStyle m_CaptionStyle;
         GUIStyle m_ReadoutStyle;
+        GUIStyle m_TitleStyle;
+        GUIStyle m_BodyStyle;
+        GUIStyle m_FooterStyle;
+        Texture2D m_CardBackground;
+        Texture2D m_Accent;
 
         public Lever Lever
         {
@@ -46,8 +59,14 @@ namespace PhysicsSandbox
             set => m_Water = value;
         }
 
-        /// <summary>True from the first N press until control is handed back, including the end card.</summary>
+        /// <summary>True from the start until control is handed back, including the end card.</summary>
         public bool IsRunning { get; private set; }
+
+        /// <summary>True once the last step of the sequence has played.</summary>
+        public bool SequenceDone { get; private set; }
+
+        /// <summary>"seconds, tab, label" for each segment, for writing a voice-over against.</summary>
+        public IReadOnlyList<string> Timeline => m_Timeline;
 
         void Awake()
         {
@@ -70,10 +89,10 @@ namespace PhysicsSandbox
             if (IsRunning)
                 StopDemo();
             else
-                StartDemo();
+                StartDemo(false);
         }
 
-        public void StartDemo()
+        public void StartDemo(bool narrated)
         {
             if (IsRunning)
                 return;
@@ -92,14 +111,42 @@ namespace PhysicsSandbox
                 return;
             }
 
+            m_Narrated = narrated;
             m_Hand = m_Interactor.transform.parent;
             m_Camera = camera.transform;
             Suspend(m_Hand);
             Suspend(m_Camera);
 
+            // A recording should show the sandbox, not the idle left hand or the simulator's
+            // on-screen help.
+            if (narrated)
+            {
+                foreach (var interactor in FindObjectsByType<NearFarInteractor>(FindObjectsSortMode.None))
+                {
+                    var parent = interactor.transform.parent;
+                    if (parent == null || parent == m_Hand)
+                        continue;
+
+                    Suspend(parent);
+                    parent.position = new Vector3(0f, -10f, 0f);
+                }
+
+                foreach (var canvas in FindObjectsByType<Canvas>(FindObjectsSortMode.None))
+                {
+                    if (canvas.enabled && canvas.renderMode != RenderMode.WorldSpace)
+                    {
+                        canvas.enabled = false;
+                        m_Suspended.Add(canvas);
+                    }
+                }
+            }
+
             foreach (var block in PhysicsBlock.All)
                 block.ResetToHome();
 
+            m_Timeline.Clear();
+            m_StartTime = Time.time;
+            SequenceDone = false;
             IsRunning = true;
             m_Run = StartCoroutine(Run());
         }
@@ -113,14 +160,15 @@ namespace PhysicsSandbox
 
             Release();
             PseudoHapticSettings.CueEnabled = true;
-            foreach (var driver in m_SuspendedDrivers)
+            foreach (var behaviour in m_Suspended)
             {
-                if (driver != null)
-                    driver.enabled = true;
+                if (behaviour != null)
+                    behaviour.enabled = true;
             }
 
-            m_SuspendedDrivers.Clear();
+            m_Suspended.Clear();
             m_Caption = "";
+            m_CardTitle = null;
         }
 
         // Tracking is switched off for the hand and camera so this script can pose them.
@@ -132,7 +180,7 @@ namespace PhysicsSandbox
                     continue;
 
                 driver.enabled = false;
-                m_SuspendedDrivers.Add(driver);
+                m_Suspended.Add(driver);
             }
         }
 
@@ -161,41 +209,94 @@ namespace PhysicsSandbox
 
         static PhysicsBlock FindLitre(MaterialDef material) => Find(material, material.densityKgPerM3 * 0.001f);
 
+        float Pick(float quick, float narrated) => m_Narrated ? narrated : quick;
+
+        void Mark(string label) => m_Timeline.Add($"{Time.time - m_StartTime:0.0}\t{label}");
+
         IEnumerator Run()
         {
             var rest = new Vector3(0.1f, 1.25f, 0.3f);
             m_Hand.SetPositionAndRotation(rest, Quaternion.identity);
+            m_Camera.SetPositionAndRotation(new Vector3(-0.10f, 1.60f, -0.55f), Quaternion.LookRotation(new Vector3(0f, -0.45f, 1f)));
+
+            if (m_Narrated)
+            {
+                Mark("Title card");
+                yield return Card("Physics You Can Feel",
+                    "A Pseudo-Haptic VR Sandbox for Experiencing\nMechanics and Material Properties\n\n" +
+                    "<color=#F2A65A>CS 567  ·  Checkpoint 3: prototype video</color>\n" +
+                    "Sven Skoglund  ·  group CS567_SVEN", 22f);
+
+                Mark("Status card");
+                yield return Card("Where the project stands", Bullets(
+                    "Checkpoints 1 and 2: proposal, related work, and the study design",
+                    "Today: the first working prototype",
+                    "Unity 6, XR Interaction Toolkit, OpenXR, C#",
+                    "Shown here in the Unity editor, with the XR simulator standing in\n     for the headset and controllers",
+                    "Next: the same scene on the Quest 2",
+                    "Built with an AI coding agent, logged task by task"), 38f);
+
+                Mark("Scene overview");
+                m_Caption = "Same-mass set: 1 kg each of pine, ice, aluminum and steel.\nThe denser the material, the smaller the block.";
+                yield return Frame(new Vector3(-0.80f, 1.52f, -0.18f), new Vector3(-0.78f, 0.98f, 0.50f), 1.8f);
+                yield return new WaitForSeconds(5f);
+                m_Caption = "Same-size set: 1 litre each, from 0.5 kg of pine to 7.85 kg of steel.";
+                yield return Frame(new Vector3(-0.10f, 1.52f, -0.18f), new Vector3(-0.10f, 0.98f, 0.50f), 1.8f);
+                yield return new WaitForSeconds(4.5f);
+                if (m_Lever != null)
+                {
+                    m_Caption = "A lever, marked in centimetres from the pivot.";
+                    yield return Frame(new Vector3(-0.38f, 1.48f, 0.10f), m_Lever.transform.position, 1.8f);
+                    yield return new WaitForSeconds(3.5f);
+                }
+
+                if (m_Water != null)
+                {
+                    m_Caption = "A water tank for float-or-sink.";
+                    yield return Frame(new Vector3(0.50f, 1.60f, -0.15f), m_Water.transform.position, 1.8f);
+                    yield return new WaitForSeconds(3.5f);
+                }
+
+                m_Caption = "A readout panel: what is held, the live cue values, and the lever and tank outcomes.";
+                yield return Frame(new Vector3(0.36f, 1.55f, 0.15f), new Vector3(0.45f, 1.60f, 1.35f), 1.8f);
+                yield return new WaitForSeconds(4.5f);
+            }
 
             // 1. Same size, different mass: the cue alone tells the blocks apart.
-            yield return Frame(new Vector3(-0.10f, 1.52f, -0.28f), new Vector3(-0.10f, 1.02f, 0.52f));
+            Mark("Same size, different mass: four lifts with the cue on");
+            yield return Frame(new Vector3(-0.10f, 1.52f, -0.28f), new Vector3(-0.10f, 1.02f, 0.52f), 1.2f);
             m_Caption = "Four blocks of the same size, 1 litre each. The hand lifts each one 30 cm.\n" +
                 "The orange wireframe is where the hand really is. Heavier blocks rise less and lag more.";
-            yield return new WaitForSeconds(2.5f);
+            yield return new WaitForSeconds(Pick(2.5f, 5f));
             foreach (var material in MaterialLibrary.All)
                 yield return LiftAndLower(FindLitre(material));
 
             // 2. Cue off: the control condition of the study.
+            Mark("Cue off: steel again, one-to-one");
             m_Caption = "Weight cue OFF (the study's control condition).\nThe same 7.85 kg steel block now follows the hand one-to-one.";
             PseudoHapticSettings.CueEnabled = false;
-            yield return new WaitForSeconds(1.5f);
+            yield return new WaitForSeconds(Pick(1.5f, 4f));
             yield return LiftAndLower(FindLitre(MaterialLibrary.Steel));
             PseudoHapticSettings.CueEnabled = true;
 
             // 3. Same mass, different size: the cue must not change with density.
-            yield return Frame(new Vector3(-0.72f, 1.50f, -0.22f), new Vector3(-0.76f, 1.02f, 0.52f));
+            Mark("Same mass, different size: pine and steel, 1 kg each");
+            yield return Frame(new Vector3(-0.72f, 1.50f, -0.22f), new Vector3(-0.76f, 1.02f, 0.52f), 1.2f);
             m_Caption = "Four blocks of the same mass, 1 kg each. Denser material, smaller block.\n" +
                 "Pine and steel get the same cue, because the cue tracks mass, not density.";
-            yield return new WaitForSeconds(2.5f);
+            yield return new WaitForSeconds(Pick(2.5f, 5f));
             yield return LiftAndLower(Find(MaterialLibrary.Pine, 1f));
             yield return LiftAndLower(Find(MaterialLibrary.Steel, 1f));
 
             // 4. Buoyancy.
             if (m_Water != null)
             {
+                Mark("Water tank: pine, ice and steel");
                 var water = m_Water.GetComponent<Collider>().bounds;
-                yield return Frame(new Vector3(water.center.x - 0.25f, 1.62f, -0.20f), new Vector3(water.center.x - 0.10f, water.center.y, water.center.z));
+                yield return Frame(new Vector3(water.center.x - 0.25f, 1.62f, -0.20f), new Vector3(water.center.x - 0.10f, water.center.y, water.center.z), 1.2f);
                 m_Caption = "Water tank. Each 1 kg block is carried over and released.\n" +
                     "Pine floats half under, ice floats 92% under, steel sinks: the submerged fraction equals the density ratio.";
+                yield return new WaitForSeconds(Pick(0f, 2.5f));
                 var drops = new[] { MaterialLibrary.Pine, MaterialLibrary.Ice, MaterialLibrary.Steel };
                 for (var i = 0; i < drops.Length; i++)
                 {
@@ -204,15 +305,16 @@ namespace PhysicsSandbox
                     yield return CarryTo(block, target);
                 }
 
-                yield return new WaitForSeconds(4f);
+                yield return new WaitForSeconds(Pick(4f, 6f));
             }
 
             // 5. Law of the lever.
             if (m_Lever != null)
             {
+                Mark("Lever: aluminum on the left, then ice balances it");
                 var pivot = m_Lever.transform.position;
                 var top = pivot.y + 0.01f;
-                yield return Frame(new Vector3(pivot.x, 1.50f, 0.02f), new Vector3(pivot.x, top, pivot.z));
+                yield return Frame(new Vector3(pivot.x, 1.50f, 0.02f), new Vector3(pivot.x, top, pivot.z), 1.2f);
 
                 var aluminum = FindLitre(MaterialLibrary.Aluminum);
                 var ice = FindLitre(MaterialLibrary.Ice);
@@ -220,18 +322,64 @@ namespace PhysicsSandbox
                 var iceArm = PhysicsFormulas.BalancingArmM(aluminum.MassKg, aluminumArm, ice.MassKg);
 
                 m_Caption = "Lever. 2.7 kg of aluminum goes 10 cm left of the pivot, and the plank tips.";
+                yield return new WaitForSeconds(Pick(0f, 2f));
                 yield return CarryTo(aluminum, new Vector3(pivot.x - aluminumArm, top + aluminum.SideM * 0.5f + 0.025f, pivot.z));
-                yield return new WaitForSeconds(2.5f);
+                yield return new WaitForSeconds(Pick(2.5f, 4f));
 
                 m_Caption = $"0.92 kg of ice balances it at {iceArm * 100f:0.0} cm on the right,\n" +
                     $"because 2.7 kg x 10 cm = 0.917 kg x {iceArm * 100f:0.0} cm.";
                 yield return CarryTo(ice, new Vector3(pivot.x + iceArm, top + ice.SideM * 0.5f + 0.035f, pivot.z));
-                yield return new WaitForSeconds(5f);
+                yield return new WaitForSeconds(Pick(5f, 8f));
             }
 
-            m_Caption = "End of the scripted demo. Press N to take the controls back.";
             yield return MoveHand(rest, 0.8f);
+
+            if (m_Narrated)
+            {
+                m_Caption = "";
+                Mark("Validation card");
+                yield return Card("Checked against closed-form physics", Bullets(
+                    "Weight cue: steel, 7.85 kg, has a gain of 0.39.\n     A 5 cm hand lift moves the block 2 cm",
+                    "Cue off: the block tracks the hand one-to-one, with no jump when switched",
+                    "Buoyancy: submerged fraction equals the density ratio.\n     Pine 0.500, ice 0.917, steel sinks",
+                    "Lever: balanced at 2.65 against 2.67 N·m, a quarter of a degree of tilt",
+                    "15 unit tests: the cue never gets weaker as mass goes up"), 36f);
+
+                Mark("Agentic workflow card");
+                yield return Card("How it was built: agentic AI", Bullets(
+                    "An AI coding agent (Claude Code) wrote the C# and generates the scene from code",
+                    "It drives the open Unity editor through a small bridge:\n     compile, enter Play mode, take screenshots, read back numbers",
+                    "It tested its own work in Play mode and caught three of its own mistakes",
+                    "Human decisions: project setup, where to run it, what to cut",
+                    "Every task is recorded in AGENT_DEV_LOG.md",
+                    "The agent captured this recording too"), 38f);
+
+                Mark("Next steps card");
+                yield return Card("Next steps", Bullets(
+                    "Run on the Quest 2 through Link, then a standalone build at 72 Hz",
+                    "Add the ramp for friction, and a load-dependent cue on the lever",
+                    "Tune the cue strength with pilot users",
+                    "Log interactions to file",
+                    "Then the study: cue on against cue off, twelve participants"), 30f);
+                Mark("End");
+            }
+            else
+            {
+                m_Caption = "End of the scripted demo. Press N to take the controls back.";
+            }
+
             m_Run = null;
+            SequenceDone = true;
+        }
+
+        static string Bullets(params string[] lines) => k_Bullet + string.Join(k_BulletGap + k_Bullet, lines);
+
+        IEnumerator Card(string title, string body, float seconds)
+        {
+            m_CardTitle = title;
+            m_CardBody = body;
+            yield return new WaitForSeconds(seconds);
+            m_CardTitle = null;
         }
 
         IEnumerator LiftAndLower(PhysicsBlock block)
@@ -241,12 +389,12 @@ namespace PhysicsSandbox
 
             yield return Grab(block);
             var start = m_Hand.position;
-            yield return MoveHand(start + Vector3.up * k_LiftHeightM, 1.0f);
-            yield return new WaitForSeconds(1.2f);
-            yield return MoveHand(start, 1.0f);
-            yield return new WaitForSeconds(0.7f);
+            yield return MoveHand(start + Vector3.up * k_LiftHeightM, Pick(1.0f, 1.3f));
+            yield return new WaitForSeconds(Pick(1.2f, 2.6f));
+            yield return MoveHand(start, Pick(1.0f, 1.3f));
+            yield return new WaitForSeconds(Pick(0.7f, 0.9f));
             Release();
-            yield return new WaitForSeconds(0.4f);
+            yield return new WaitForSeconds(Pick(0.4f, 0.7f));
         }
 
         // Carries a block so that the block itself, not the hand, ends up at the target.
@@ -259,10 +407,10 @@ namespace PhysicsSandbox
             var clearance = Mathf.Max(block.transform.position.y, target.y) + 0.14f;
             var from = block.transform.position;
             yield return ServoBlock(block, new Vector3(from.x, clearance, from.z), 0.8f);
-            yield return ServoBlock(block, new Vector3(target.x, clearance, target.z), 1.4f);
+            yield return ServoBlock(block, new Vector3(target.x, clearance, target.z), Pick(1.4f, 1.8f));
             yield return ServoBlock(block, target, 0.9f);
             Release();
-            yield return new WaitForSeconds(0.6f);
+            yield return new WaitForSeconds(Pick(0.6f, 1.0f));
         }
 
         IEnumerator Grab(PhysicsBlock block)
@@ -319,12 +467,12 @@ namespace PhysicsSandbox
             }
         }
 
-        IEnumerator Frame(Vector3 position, Vector3 lookAt)
+        IEnumerator Frame(Vector3 position, Vector3 lookAt, float duration)
         {
             var startPosition = m_Camera.position;
             var startRotation = m_Camera.rotation;
             var rotation = Quaternion.LookRotation(lookAt - position, Vector3.up);
-            for (var t = 0f; t < 1f; t += Time.deltaTime / 1.2f)
+            for (var t = 0f; t < 1f; t += Time.deltaTime / duration)
             {
                 var s = Mathf.SmoothStep(0f, 1f, t);
                 m_Camera.SetPositionAndRotation(Vector3.Lerp(startPosition, position, s), Quaternion.Slerp(startRotation, rotation, s));
@@ -336,23 +484,18 @@ namespace PhysicsSandbox
 
         void OnGUI()
         {
-            if (string.IsNullOrEmpty(m_Caption))
+            if (m_CardTitle == null && string.IsNullOrEmpty(m_Caption))
                 return;
 
-            if (m_CaptionStyle == null)
-            {
-                var background = new Texture2D(1, 1) { hideFlags = HideFlags.HideAndDontSave };
-                background.SetPixel(0, 0, new Color(0.05f, 0.06f, 0.08f, 0.88f));
-                background.Apply();
+            EnsureStyles();
+            var scale = Screen.height / 720f;
 
-                m_CaptionStyle = new GUIStyle(GUI.skin.box) { alignment = TextAnchor.MiddleCenter, wordWrap = true, richText = true };
-                m_CaptionStyle.normal.background = background;
-                m_CaptionStyle.normal.textColor = Color.white;
-                m_ReadoutStyle = new GUIStyle(m_CaptionStyle);
-                m_ReadoutStyle.normal.textColor = new Color(1f, 0.72f, 0.35f);
+            if (m_CardTitle != null)
+            {
+                DrawCard(scale);
+                return;
             }
 
-            var scale = Screen.height / 720f;
             m_CaptionStyle.fontSize = Mathf.RoundToInt(21f * scale);
             m_ReadoutStyle.fontSize = Mathf.RoundToInt(19f * scale);
 
@@ -363,6 +506,52 @@ namespace PhysicsSandbox
             var readout = BuildReadout();
             if (readout.Length > 0)
                 GUI.Box(new Rect(x, 98f * scale, width, 36f * scale), readout, m_ReadoutStyle);
+        }
+
+        void DrawCard(float scale)
+        {
+            m_TitleStyle.fontSize = Mathf.RoundToInt(46f * scale);
+            m_BodyStyle.fontSize = Mathf.RoundToInt(25f * scale);
+            m_FooterStyle.fontSize = Mathf.RoundToInt(15f * scale);
+
+            var margin = Screen.width * 0.09f;
+            var width = Screen.width - 2f * margin;
+            GUI.DrawTexture(new Rect(0f, 0f, Screen.width, Screen.height), m_CardBackground);
+            GUI.Label(new Rect(margin, Screen.height * 0.11f, width, 70f * scale), m_CardTitle, m_TitleStyle);
+            GUI.DrawTexture(new Rect(margin, Screen.height * 0.11f + 74f * scale, 110f * scale, 5f * scale), m_Accent);
+            GUI.Label(new Rect(margin, Screen.height * 0.11f + 108f * scale, width, Screen.height * 0.68f), m_CardBody, m_BodyStyle);
+            GUI.Label(new Rect(margin, Screen.height - 46f * scale, width, 30f * scale),
+                "Physics You Can Feel  ·  CS 567 Checkpoint 3  ·  CS567_SVEN", m_FooterStyle);
+        }
+
+        void EnsureStyles()
+        {
+            if (m_CaptionStyle != null)
+                return;
+
+            m_CardBackground = SolidTexture(new Color(0.055f, 0.07f, 0.10f, 1f));
+            m_Accent = SolidTexture(new Color(0.95f, 0.65f, 0.35f, 1f));
+
+            m_CaptionStyle = new GUIStyle(GUI.skin.box) { alignment = TextAnchor.MiddleCenter, wordWrap = true, richText = true };
+            m_CaptionStyle.normal.background = SolidTexture(new Color(0.05f, 0.06f, 0.08f, 0.88f));
+            m_CaptionStyle.normal.textColor = Color.white;
+            m_ReadoutStyle = new GUIStyle(m_CaptionStyle);
+            m_ReadoutStyle.normal.textColor = new Color(1f, 0.72f, 0.35f);
+
+            m_TitleStyle = new GUIStyle(GUI.skin.label) { alignment = TextAnchor.UpperLeft, fontStyle = FontStyle.Bold, richText = true };
+            m_TitleStyle.normal.textColor = Color.white;
+            m_BodyStyle = new GUIStyle(GUI.skin.label) { alignment = TextAnchor.UpperLeft, wordWrap = true, richText = true };
+            m_BodyStyle.normal.textColor = new Color(0.88f, 0.90f, 0.93f);
+            m_FooterStyle = new GUIStyle(GUI.skin.label) { alignment = TextAnchor.UpperLeft };
+            m_FooterStyle.normal.textColor = new Color(0.55f, 0.60f, 0.66f);
+        }
+
+        static Texture2D SolidTexture(Color color)
+        {
+            var texture = new Texture2D(1, 1) { hideFlags = HideFlags.HideAndDontSave };
+            texture.SetPixel(0, 0, color);
+            texture.Apply();
+            return texture;
         }
 
         string BuildReadout()

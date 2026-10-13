@@ -31,3 +31,7 @@ ProjectProposalFeedback.rtf
 /CS567-Proposal-Skoglund.docx
 /GeminiEnhancedMockup.jpeg
 /HandDrawnMockup.jpeg
+
+# Recorded videos are uploaded, not committed
+/video/*.mp4
+/video/*.status.txt
