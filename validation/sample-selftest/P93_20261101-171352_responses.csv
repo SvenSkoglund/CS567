@@ -1,0 +1,59 @@
+timestamp,participant,run_type,order,block,cue,set,phase,item,prompt,choice,correct_choice,correct,rt_ms,completion_ms,falls,outcome,measures
+17:13:53.095,P93,selftest,1,0,,,training,buttons,press a button,Continue,,,374,374,0,done,
+17:13:57.187,P93,selftest,1,0,,,training,grab_and_place,place the block on the pad,,,,4092,4092,0,done,
+17:13:58.669,P93,selftest,1,1,on,A,pretest,A1_volume,A 1 kg block of pine and a 1 kg block of aluminum sit on a table. Which block is larger?,The pine block,The pine block,1,561,561,0,answered,
+17:13:59.286,P93,selftest,1,1,on,A,pretest,A2_float,A large pine beam weighs 20 kg. A small steel nail weighs 5 grams. Which one floats in water?,Only the pine beam,Only the pine beam,1,617,617,0,answered,
+17:13:59.872,P93,selftest,1,1,on,A,pretest,A3_ramp,An ice block and a much heavier steel block of the same size are let go at the top of the same ramp. Which one slides farther?,They slide the same distance,The ice block,0,586,586,0,answered,
+17:14:00.431,P93,selftest,1,1,on,A,pretest,A4_lever,A 6 kg load sits 10 cm to the left of a lever's pivot. How far to the right of the pivot does a 2 kg load balance it?,30 cm,30 cm,1,559,559,0,answered,
+17:14:01.046,P93,selftest,1,1,on,A,pretest,A5_transfer,"You hold a 1 kg bag of feathers, then a 1 kg bar of gold. Which one pulls down harder on your hand?",The feathers,They pull the same,0,615,615,0,answered,
+17:14:01.605,P93,selftest,1,1,on,A,pretest,A6_transfer,Olive oil is less dense than water. You pour some into a glass of water. Where does the oil end up?,It spreads evenly through the water,It floats on top,0,559,559,0,answered,
+17:14:06.181,P93,selftest,1,1,on,A,scene_same_mass,pine_vs_aluminum,which is heavier,Aluminum,They weigh the same,0,554,4576,0,done,size_a_cm=12.6;size_b_cm=7.2
+17:14:16.772,P93,selftest,1,1,on,A,scene_buoyancy,ice,will the ice block float or sink,It will sink,It will float,0,360,7090,0,done,submerged=0.912;expected=0.917
+17:14:26.049,P93,selftest,1,1,on,A,scene_buoyancy,aluminum,will the aluminum block float or sink,It will float,It will sink,0,414,5777,0,done,submerged=1.000;expected=1.000
+17:14:40.529,P93,selftest,1,1,on,A,scene_ramp,ice_vs_steel,which slides farther,The steel block,The ice block,0,359,10978,0,done,ice_slid_cm=56.3;steel_slid_cm=3.8;ice_seconds=0.93;ice_predicted_accel=1.11;ice_measured_accel=1.29
+17:14:49.482,P93,selftest,1,1,on,A,scene_lever,ice_vs_aluminum,where will the block balance,30 cm,30 cm,1,359,5452,0,done,final_arm_cm=29.7;target_arm_cm=29.4;attempts=1;left_Nm=2.65;right_Nm=2.68;tilt_deg=0.2
+17:14:57.403,P93,selftest,1,1,on,A,heaviness,trial_1,which felt heavier,Left block,Left block,1,604,4420,0,done,left_kg=8;right_kg=0.5
+17:15:02.024,P93,selftest,1,1,on,A,heaviness,trial_2,which felt heavier,Left block,Right block,0,604,4621,0,done,left_kg=0.5;right_kg=4
+17:15:06.595,P93,selftest,1,1,on,A,heaviness,trial_3,which felt heavier,Right block,Right block,1,554,4570,0,done,left_kg=0.5;right_kg=2
+17:15:11.170,P93,selftest,1,1,on,A,heaviness,trial_4,which felt heavier,Right block,Left block,0,554,4576,0,done,left_kg=8;right_kg=2
+17:15:15.795,P93,selftest,1,1,on,A,heaviness,trial_5,which felt heavier,Left block,Left block,1,606,4625,0,done,left_kg=4;right_kg=1
+17:15:20.413,P93,selftest,1,1,on,A,heaviness,trial_6,which felt heavier,Left block,Right block,0,605,4618,0,done,left_kg=1;right_kg=8
+17:15:21.031,P93,selftest,1,1,on,A,posttest,A1_volume,A 1 kg block of pine and a 1 kg block of aluminum sit on a table. Which block is larger?,The pine block,The pine block,1,617,617,0,answered,
+17:15:21.590,P93,selftest,1,1,on,A,posttest,A2_float,A large pine beam weighs 20 kg. A small steel nail weighs 5 grams. Which one floats in water?,Only the pine beam,Only the pine beam,1,560,560,0,answered,
+17:15:22.149,P93,selftest,1,1,on,A,posttest,A3_ramp,An ice block and a much heavier steel block of the same size are let go at the top of the same ramp. Which one slides farther?,They slide the same distance,The ice block,0,558,558,0,answered,
+17:15:22.707,P93,selftest,1,1,on,A,posttest,A4_lever,A 6 kg load sits 10 cm to the left of a lever's pivot. How far to the right of the pivot does a 2 kg load balance it?,30 cm,30 cm,1,558,558,0,answered,
+17:15:23.266,P93,selftest,1,1,on,A,posttest,A5_transfer,"You hold a 1 kg bag of feathers, then a 1 kg bar of gold. Which one pulls down harder on your hand?",The gold,They pull the same,0,559,559,0,answered,
+17:15:23.824,P93,selftest,1,1,on,A,posttest,A6_transfer,Olive oil is less dense than water. You pour some into a glass of water. Where does the oil end up?,It sinks to the bottom,It floats on top,0,558,558,0,answered,
+17:15:24.421,P93,selftest,1,1,on,A,presence,presence_1,I felt as if I was really standing at the workbench.,7,,,597,597,0,answered,
+17:15:24.979,P93,selftest,1,1,on,A,presence,presence_2,The blocks felt like real objects with their own weight.,3,,,558,558,0,answered,
+17:15:25.537,P93,selftest,1,1,on,A,presence,presence_3,I could tell how heavy an object was by handling it.,2,,,558,558,0,answered,
+17:15:26.134,P93,selftest,1,1,on,A,presence,presence_4,Moving the objects felt natural.,7,,,597,597,0,answered,
+17:15:26.706,P93,selftest,1,1,on,A,presence,presence_5,I felt comfortable during this part (no dizziness or nausea).,4,,,572,572,0,answered,
+17:15:27.826,P93,selftest,1,2,off,B,pretest,B1_volume,A 1 kg block of ice and a 1 kg block of steel sit on a table. Which block is larger?,The ice block,The ice block,1,559,559,0,answered,
+17:15:28.384,P93,selftest,1,2,off,B,pretest,B2_float,A huge iceberg weighs 1000 tonnes. A small aluminum cube weighs 2 grams. Which one floats in water?,Both float,Only the iceberg,0,558,558,0,answered,
+17:15:29.000,P93,selftest,1,2,off,B,pretest,B3_ramp,An ice block and a heavier aluminum block of the same size are let go at the top of the same ramp. Which one slides farther?,The aluminum block,The ice block,0,616,616,0,answered,
+17:15:29.576,P93,selftest,1,2,off,B,pretest,B4_lever,An 8 kg load sits 5 cm to the left of a lever's pivot. How far to the right of the pivot does a 2 kg load balance it?,40 cm,20 cm,0,576,576,0,answered,
+17:15:30.192,P93,selftest,1,2,off,B,pretest,B5_transfer,"You put 1 kg of foam on a scale, then 1 kg of lead. Which one gives the higher reading?",The readings are the same,The readings are the same,1,615,615,0,answered,
+17:15:30.751,P93,selftest,1,2,off,B,pretest,B6_transfer,Honey is denser than water. You pour some into a glass of water. Where does the honey end up?,It spreads evenly through the water,It sinks to the bottom,0,559,559,0,answered,
+17:15:35.382,P93,selftest,1,2,off,B,scene_same_mass,ice_vs_steel,which is heavier,Ice,They weigh the same,0,605,4632,0,done,size_a_cm=10.3;size_b_cm=5.0
+17:15:48.382,P93,selftest,1,2,off,B,scene_buoyancy,pine,will the pine block float or sink,It will sink,It will float,0,357,9499,0,done,submerged=0.508;expected=0.500
+17:15:58.072,P93,selftest,1,2,off,B,scene_buoyancy,steel,will the steel block float or sink,It will sink,It will sink,1,356,6188,0,done,submerged=1.000;expected=1.000
+17:16:13.462,P93,selftest,1,2,off,B,scene_ramp,ice_vs_aluminum,which slides farther,The aluminum block,The ice block,0,358,11889,0,done,ice_slid_cm=56.3;aluminum_slid_cm=14.8;ice_seconds=0.93;ice_predicted_accel=1.11;ice_measured_accel=1.29
+17:16:23.260,P93,selftest,1,2,off,B,scene_lever,aluminum_vs_steel,where will the block balance,5 cm,15 cm,0,417,6298,0,done,final_arm_cm=14.9;target_arm_cm=14.5;attempts=1;left_Nm=3.89;right_Nm=3.96;tilt_deg=-0.1
+17:16:31.132,P93,selftest,1,2,off,B,heaviness,trial_1,which felt heavier,Right block,Right block,1,555,4370,0,done,left_kg=0.5;right_kg=2
+17:16:35.703,P93,selftest,1,2,off,B,heaviness,trial_2,which felt heavier,Right block,Left block,0,553,4571,0,done,left_kg=4;right_kg=0.5
+17:16:40.272,P93,selftest,1,2,off,B,heaviness,trial_3,which felt heavier,Right block,Right block,1,553,4569,0,done,left_kg=0.5;right_kg=8
+17:16:44.845,P93,selftest,1,2,off,B,heaviness,trial_4,which felt heavier,Right block,Left block,0,555,4573,0,done,left_kg=4;right_kg=1
+17:16:49.415,P93,selftest,1,2,off,B,heaviness,trial_5,which felt heavier,Right block,Right block,1,554,4570,0,done,left_kg=1;right_kg=8
+17:16:54.037,P93,selftest,1,2,off,B,heaviness,trial_6,which felt heavier,Left block,Left block,1,605,4622,0,done,left_kg=8;right_kg=2
+17:16:54.594,P93,selftest,1,2,off,B,posttest,B1_volume,A 1 kg block of ice and a 1 kg block of steel sit on a table. Which block is larger?,They are the same size,The ice block,0,557,557,0,answered,
+17:16:55.212,P93,selftest,1,2,off,B,posttest,B2_float,A huge iceberg weighs 1000 tonnes. A small aluminum cube weighs 2 grams. Which one floats in water?,Only the iceberg,Only the iceberg,1,618,618,0,answered,
+17:16:55.773,P93,selftest,1,2,off,B,posttest,B3_ramp,An ice block and a heavier aluminum block of the same size are let go at the top of the same ramp. Which one slides farther?,The ice block,The ice block,1,561,561,0,answered,
+17:16:56.388,P93,selftest,1,2,off,B,posttest,B4_lever,An 8 kg load sits 5 cm to the left of a lever's pivot. How far to the right of the pivot does a 2 kg load balance it?,5 cm,20 cm,0,614,614,0,answered,
+17:16:56.946,P93,selftest,1,2,off,B,posttest,B5_transfer,"You put 1 kg of foam on a scale, then 1 kg of lead. Which one gives the higher reading?",The foam,The readings are the same,0,559,559,0,answered,
+17:16:57.506,P93,selftest,1,2,off,B,posttest,B6_transfer,Honey is denser than water. You pour some into a glass of water. Where does the honey end up?,It floats on top,It sinks to the bottom,0,559,559,0,answered,
+17:16:58.066,P93,selftest,1,2,off,B,presence,presence_1,I felt as if I was really standing at the workbench.,5,,,560,560,0,answered,
+17:16:58.624,P93,selftest,1,2,off,B,presence,presence_2,The blocks felt like real objects with their own weight.,3,,,558,558,0,answered,
+17:16:59.183,P93,selftest,1,2,off,B,presence,presence_3,I could tell how heavy an object was by handling it.,2,,,559,559,0,answered,
+17:16:59.742,P93,selftest,1,2,off,B,presence,presence_4,Moving the objects felt natural.,5,,,559,559,0,answered,
+17:17:00.333,P93,selftest,1,2,off,B,presence,presence_5,I felt comfortable during this part (no dizziness or nausea).,6,,,591,591,0,answered,

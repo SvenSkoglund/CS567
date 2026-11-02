@@ -36,3 +36,6 @@ ProjectProposalFeedback.rtf
 /video/*.mp4
 /video/*.status.txt
 /*.mp3
+
+# Participant data stays out of the public repository
+/PhysicsSandbox/StudyData/

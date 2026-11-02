@@ -24,6 +24,8 @@ Files
   references.bib                bibliography; entries verified via source DOIs
   HandDrawnMockup.jpeg          Figure 1, hand-drawn concept sketch
   GeminiEnhancedMockup.jpeg     Figure 2, AI-enhanced render of the sketch
+  prototype-sandbox.png         Figure 3, the built sandbox
+  prototype-experiment.png      Figure 4, experiment mode on the experimenter's desktop
   CS567-Checkpoint1-Skoglund.pdf  exported PDF, Checkpoint 1
   CS567-Checkpoint2-Skoglund.pdf  exported PDF, Checkpoint 2 (current)
 

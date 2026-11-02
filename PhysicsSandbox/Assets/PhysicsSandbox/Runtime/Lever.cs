@@ -29,6 +29,17 @@ namespace PhysicsSandbox
 
         public bool IsBalanced => LoadCount > 0 && Mathf.Abs(TiltDeg) < k_BalancedAngleDeg;
 
+        /// <summary>
+        /// Stricter test for the study's lever task: loads on both sides with torques within
+        /// the given fraction of each other, since the centering spring lets the plank look
+        /// level over a wider range.
+        /// </summary>
+        public bool TorquesMatch(float tolerance)
+        {
+            var larger = Mathf.Max(LeftTorqueNm, RightTorqueNm);
+            return LeftTorqueNm > 0f && RightTorqueNm > 0f && IsBalanced && Mathf.Abs(LeftTorqueNm - RightTorqueNm) <= tolerance * larger;
+        }
+
         public Collider[] IgnoreCollisionWith
         {
             get => m_IgnoreCollisionWith;

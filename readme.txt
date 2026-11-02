@@ -1,13 +1,16 @@
 CS 567 — Physics You Can Feel: A Pseudo-Haptic VR Sandbox
 Sven Skoglund (group CS567_SVEN)
-Checkpoint 3 — Prototype video
+Checkpoints 4 and 5 — Short demo video and long experiment video
 
 ====================================================================
-REQUIRED LINK  (confirm it opens in a private/incognito tab)
+REQUIRED LINKS  (confirm each opens in a private/incognito tab)
 ====================================================================
 
-Prototype video (5-10 min, YouTube unlisted):
-  https://youtu.be/BbeIqTUpn2Y
+Checkpoint 4, short demo video (5 min or less, YouTube unlisted):
+  PASTE-SHORT-VIDEO-LINK-HERE
+
+Checkpoint 5, long video, slides then experiment (YouTube unlisted):
+  PASTE-LONG-VIDEO-LINK-HERE
 
 ====================================================================
 OTHER LINKS
@@ -16,11 +19,14 @@ OTHER LINKS
 GitHub repository:
   https://github.com/SvenSkoglund/CS567
 
+Checkpoint 3 prototype video (YouTube unlisted):
+  https://youtu.be/BbeIqTUpn2Y
+
 Checkpoint 2 status video (YouTube unlisted):
   https://youtu.be/ywl5PZBO41Y
 
-Paper PDF (unchanged since Checkpoint 2):
-  CS567-Proposal-Template-LaTeX/CS567-Checkpoint2-Skoglund.pdf
+Paper source (past tense, updated for this checkpoint):
+  CS567-Proposal-Template-LaTeX/main.tex
 
 ====================================================================
 WHAT THE PROTOTYPE DOES
@@ -38,20 +44,26 @@ workbench holding:
   reports when the plank balances.
 - A water tank. Blocks float or sink by density, at the depth Archimedes predicts.
 - A readout panel with the held block's properties, the live cue parameters, and
-  the lever and tank outcomes.
+  the lever, tank and ramp outcomes.
+- A ramp on a side table (new). Friction decides what slides: at 12.5 degrees ice
+  runs to the bottom, while the heavier aluminum and steel hold when set down square.
+- Experiment mode (new). It runs the study as a participant sees it: enter a
+  participant ID, the counterbalanced condition order follows from it, then
+  training and two blocks of pre-test, four scenes, six heaviness trials, post-test
+  and questionnaire. Everything is logged to file.
 
 Checked against closed-form physics in Play mode: displayed lift follows the gain
-mapping (steel, gain 0.39: a 5 cm hand lift moves the block 2 cm), submerged
-fraction equals density ratio (pine 0.500, ice 0.917), and the lever balances when
-the torques match. 15 unit tests cover cue monotonicity.
+mapping (a 30 cm hand lift leaves steel 12.7 cm below the hand and pine 2.5 cm),
+submerged fraction equals density ratio (pine 0.500, ice 0.917), the lever balances
+when the torques match, and ramp acceleration stays within 3.1% of the closed form at
+three slopes (validation/ramp-check-2026-11-01.txt). 28 unit tests cover cue
+monotonicity and the study design. A scripted participant completed full sessions
+through the real grab pipeline (validation/sample-selftest/ holds one, clearly marked
+run_type=selftest).
 
-The video shows the scripted demo: a scripted hand drives the same grab pipeline a
-person would, in the Unity editor with the XR simulator. It was captured from the
-Game view by Editor/SandboxRecorder.cs.
-
-Not in this checkpoint: the ramp, the pulley, hand tracking, file logging, and a
-standalone Quest build. The prototype runs in the Unity editor, either through
-Quest Link or with the keyboard-and-mouse XR simulator.
+Not yet built: a further concept (pulley or launcher). Hand tracking and a standalone
+Quest build were set aside; the prototype runs from the Unity editor through Quest
+Link, or with the keyboard-and-mouse XR simulator.
 
 ====================================================================
 RUNNING THE PROTOTYPE
@@ -72,14 +84,25 @@ Controls:
 
 To regenerate the scene from code: menu CS567 -> Build Sandbox Scene.
 
+Experiment mode: point at "Start experiment mode" and squeeze the grip or pull the
+trigger (keyboard: F1). Enter the participant ID with the buttons or the number keys.
+IDs 1-12 are study participants; 90-99 are logged as pilot runs. Answer by pointing
+and squeezing (keyboard: F1 to F7). Experimenter keys: F10 skips a task, F12 aborts.
+Data goes to PhysicsSandbox/StudyData/ (not committed).
+  python analysis/summarize.py     prints the dependent variables from the logs
+
 ====================================================================
 FILES
 ====================================================================
   readme.txt                                  this file
   AGENT_DEV_LOG.md                            agentic-AI development log
+  analysis/summarize.py                       logs to dependent variables
+  validation/                                 ramp check, sample self-test session
+  video/checkpoint4-5-recording-guide.md      shot lists and recording setup
   PhysicsSandbox/                             Unity project
   PhysicsSandbox/Assets/PhysicsSandbox/       our code, scene, materials and tests
-    Runtime/                                  cue, blocks, lever, buoyancy, panel
+    Runtime/                                  cue, blocks, lever, buoyancy, ramp, panel,
+                                              experiment mode, study design, logging
     Editor/                                   scene builder, self-test, test runner
     AgentBridge/                              lets the AI coding agent drive the editor
     Tests/EditMode/                           unit tests

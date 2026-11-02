@@ -1,5 +1,5 @@
 %% CS 567 - 3D User Interfaces and Human-Centered Spatial AI - Fall 2026
-%% Project Proposal.
+%% Project paper (past tense from Checkpoint 5 on, per professor feedback).
 
 \documentclass[sigconf,nonacm]{acmart}
 
@@ -9,6 +9,7 @@
 
 \usepackage{xcolor}
 \usepackage{graphicx}
+\usepackage{booktabs}
 
 %% Gray italic instruction text. DELETE every \guide{...} before you submit.
 \newcommand{\guide}[1]{{\color{gray}\itshape #1\par\medskip}}
@@ -34,20 +35,18 @@
 %% NOTE(Sven): write the abstract LAST, then revise into your own voice. 100-150 words.
 \begin{abstract}
 Physical intuition about mass, volume, density, and friction, and about simple
-machines such as levers and pulleys, is hard to build from equations and 2D
-diagrams, and the demonstrations that would make it concrete are often
-impractical or unsafe in a classroom. We propose an immersive virtual-reality
-sandbox in which learners create, hold, weigh, and manipulate objects and simple
-machines. Because commodity headsets cannot render true weight, we use
-pseudo-haptic cues, modulating control-to-display gain and visual lag, so that a
-heavier object feels heavier and a more heavily loaded lever feels harder to
-move; the cue tracks mass and load, while density is revealed through the volume
-of equal-mass blocks and through whether they float or sink. The application is
-pure VR with no in-scene agent; agentic AI is instead the development workflow, an
-AI coding agent that helps implement the Unity project. We evaluate the system
-against closed-form physics and run a small within-subjects study testing whether
-the weight cue improves how accurately learners predict outcomes that depend on
-mass, density, and load.
+machines such as levers, is hard to build from equations and 2D diagrams, and the
+demonstrations that would make it concrete are often impractical or unsafe in a
+classroom. We built an immersive virtual-reality sandbox in which learners held,
+compared, and tested blocks of different materials on a lever, in a water tank, and
+on a ramp. Because commodity headsets cannot render true weight, we used pseudo-haptic
+cues, modulating control-to-display gain and visual lag, so that a heavier object felt
+heavier; the cue tracked mass, while density was revealed through the volume of
+equal-mass blocks and through whether they floated or sank. The application was pure
+VR with no in-scene agent; agentic AI was instead the development workflow. We
+validated the system against closed-form physics and ran a within-subjects study
+testing whether the weight cue improved how accurately learners predicted outcomes
+that depended on mass, density, and load.
 \end{abstract}
 
 \keywords{3D user interfaces; virtual reality; embodied learning; pseudo-haptics;
@@ -57,249 +56,318 @@ physics education; agentic AI; AI-assisted development}
 
 %% ---------------------------------------------------------------- body
 \section{Introduction and Motivation}
-Introductory physics rests on relationships that students can state long before
-they can predict with them. Density relates mass to volume, buoyancy determines
-whether an object floats, friction resists sliding in proportion to the normal
-load, and simple machines such as levers and pulleys trade force for distance.
-The usual failure is not arithmetic but intuition. Asked whether a kilogram of
-gold or a kilogram of ice is larger, which of two blocks slides farther down a
-ramp, or where a load balances on a lever, many learners fall back on
-misconceptions such as ``heavier means bigger.'' Textbooks and 2D simulations
-show the formula and the result, yet they do not let a student \emph{feel} the
-difference.
+Introductory physics rests on relationships that students can state long before they
+can predict with them. Density relates mass to volume, buoyancy determines whether an
+object floats, friction resists sliding in proportion to the normal load, and simple
+machines such as levers trade force for distance. The usual failure is not arithmetic
+but intuition. Asked whether a kilogram of gold or a kilogram of ice is larger, which
+of two blocks slides farther down a ramp, or where a load balances on a lever, many
+learners fall back on misconceptions such as ``heavier means bigger.'' Textbooks and
+2D simulations show the formula and the result, yet they do not let a student
+\emph{feel} the difference.
 
-Doing the demonstration in real life is harder than it sounds: the comparisons
-that isolate a single variable are exactly the ones that are awkward, expensive,
-or unsafe to stage, since matched-mass materials are not classroom stock and
-friction is hard to hold constant. Virtual reality can present these controlled
-manipulations on demand, but a handheld controller weighs the same whatever it
-represents, so the sensation many lessons depend on is missing. The open question
-is whether a spatial interface can make physical properties and mechanical
-behavior \emph{felt} well enough to matter, given that the dominant channel for
-weight and force is the one current hardware cannot deliver.
+Doing the demonstration in real life is harder than it sounds: the comparisons that
+isolate a single variable are exactly the ones that are awkward, expensive, or unsafe
+to stage, since matched-mass materials are not classroom stock and friction is hard
+to hold constant. Virtual reality can present these controlled manipulations on
+demand, but a handheld controller weighs the same whatever it represents, so the
+sensation many lessons depend on is missing. The question we set out to answer was
+whether a spatial interface could make physical properties and mechanical behavior
+\emph{felt} well enough to matter, given that the dominant channel for weight and
+force is the one current hardware cannot deliver.
 
 %% Related Work lives in related-work.tex (expanded for Checkpoint 1).
 \input{related-work}
 
 \section{Approach}
-We will build a VR ``physics sandbox'' in which the learner constructs and probes
-scenarios and the interface makes the governing quantity perceptible. Early
-scenarios target material properties: pick up two blocks and feel which is
-heavier on a balance, drop them in water to see buoyancy, and drag them across a
-ramp to compare friction. Density is made visible rather than felt: two
-\emph{equal-mass} blocks of different materials differ in size, so the denser one
-is visibly smaller, and the same pair floats or sinks by density in the tank. The
-same interaction model extends to mechanical devices, such as placing weights on
-a lever to find its balance point or routing a rope through a pulley to feel the
-reduced effort. In each case a single variable is isolated so the outcome has a
-clear cause. Weight and resistance are conveyed through pseudo-haptics,
-modulating control-to-display gain and visual lag so that a heavier block feels
-heavier and a more heavily loaded lever feels harder to
-move~\cite{ujitoko2021pseudo, dominjon2005influence, rietzler2018breaking}. The
-cue tracks an object's \emph{mass}, the quantity that determines its weight,
-rather than its density: equal-mass blocks weigh the same whatever their material,
-so making a denser block feel heavier would teach the very ``heavier means
-bigger'' misconception the sandbox sets out to correct. This is where the project
-complies with HCI research in \textbf{Virtual Reality}: the contribution is an
-interaction technique for making an unrenderable physical quantity perceptible
-through direct, embodied manipulation.
+We built a VR ``physics sandbox'' in which the learner probed scenarios and the
+interface made the governing quantity perceptible. The scenarios targeted material
+properties and one mechanical device: the learner compared blocks by lifting them,
+put them in water to see buoyancy, released them on a ramp to compare friction, and
+placed them on a lever to find its balance point. Density was made visible rather than
+felt: two \emph{equal-mass} blocks of different materials differed in size, so the
+denser one was visibly smaller, and the same materials floated or sank by density in
+the tank. In each case a single variable was isolated so the outcome had a clear
+cause. Weight was conveyed through pseudo-haptics, modulating control-to-display gain
+and visual lag so that a heavier block felt
+heavier~\cite{ujitoko2021pseudo, dominjon2005influence, rietzler2018breaking}. The cue
+tracked an object's \emph{mass}, the quantity that determines its weight, rather than
+its density: equal-mass blocks weigh the same whatever their material, so making a
+denser block feel heavier would have taught the very ``heavier means bigger''
+misconception the sandbox set out to correct. This is where the project complied with
+HCI research in \textbf{Virtual Reality}: the contribution was an interaction technique
+for making an unrenderable physical quantity perceptible through direct, embodied
+manipulation.
 
-The second aspect is the \textbf{agentic-AI} development workflow, and we are
-deliberate about the distinction the assignment draws. The finished application
-has no in-scene chatbot for the learner to talk to. Instead, agentic AI is how
-the software is built: an AI coding agent works in the project with real tools,
-editing Unity C\# scripts, running builds, reading compiler and test output, and
-iterating toward a working scene over many steps rather than emitting one block
-of code from a single prompt. It plans, uses tools, observes results, and
-self-corrects toward a goal. We report what it implemented, where it needed human
-correction, and how the workflow shaped the build. The professor has confirmed
-that a pure VR project built this way satisfies the assignment.
+The second aspect was the \textbf{agentic-AI} development workflow, and we were
+deliberate about the distinction the assignment drew. The finished application had no
+in-scene chatbot for the learner to talk to. Instead, agentic AI was how the software
+was built: an AI coding agent worked in the project with real tools, editing Unity
+C\# scripts, compiling, entering Play mode, reading back measurements and test output,
+and iterating toward a working scene over many steps rather than emitting one block of
+code from a single prompt. We reported what it implemented, where it needed human
+correction, and how the workflow shaped the build. The professor confirmed that a pure
+VR project built this way satisfied the assignment.
 
-\section{System Vision and Technology}
-When it works, the demo is a first-person VR scene with a ground plane, a work
-area, and a menu for spawning materials and mechanical devices (Figures
-\ref{fig:mockup} and \ref{fig:mockup-render}). The learner grabs objects with
-hand-tracking or controllers and feels a heavier one resist motion or a loaded
-lever push back; a side panel shows each object's properties and the measured
-outcome of an interaction. Early scenarios cover density, buoyancy, and friction,
-with levers, pulleys, and projectiles added on the same framework as the project
-grows.
+\section{System}
+\label{sec:system}
+The sandbox was a first-person VR scene with a workbench and a side table (Figures
+\ref{fig:mockup} through \ref{fig:prototype}). It held four materials (pine, ice,
+aluminum, and steel) in two block sets: a same-mass set of 1\,kg cubes, in which size
+alone showed density, and a same-size set of one-litre cubes from 0.5 to 7.85\,kg, in
+which only the weight cue told them apart. The learner grabbed objects with Quest
+Touch controllers. A lever with centimetre marks reported the torque on each side, a
+water tank floated or sank blocks by Archimedes' principle, and a 12.5$^\circ$ ramp
+with a start line let friction decide which blocks slid. A side panel showed each
+object's properties and the measured outcome of an interaction when the sandbox was
+used freely; in experiment mode it was hidden and replaced by the panel in
+Figure~\ref{fig:experiment}.
 
-We will build in \textbf{Unity 6} with the \textbf{XR Interaction Toolkit} and
-\textbf{OpenXR}, in \textbf{C\#}, targeting the \textbf{Meta Quest 2}
-(hand-tracking and controllers). Physics uses Unity's rigid-body engine with
-per-material density and friction parameters and standard joints for levers and
-pulleys. Development uses an agentic-AI coding workflow, an AI agent that edits
-scripts, runs builds, and reads compiler output while iterating toward each
-scene. We already have a Quest 2 and a Unity development machine.
+We built in \textbf{Unity 6} with the \textbf{XR Interaction Toolkit} and
+\textbf{OpenXR}, in \textbf{C\#}. The scene ran from a PC on a \textbf{Meta Quest 2}
+over Quest Link. Physics used Unity's rigid-body engine with per-material density and
+friction, and the entire scene was generated from code so that its layout was
+reproducible.
+
+\textbf{The weight cue.} While a block was held, the object was displayed at a position
+derived from the hand's. Gain fell from 1 at 0.25\,kg to 0.35 at 10\,kg and lag rose
+from 0 to 300\,ms, both on a logarithmic scale of mass, so that equal mass ratios gave
+equal cue steps. Early versions applied gain in every direction, as earlier
+work described~\cite{dominjon2005influence}, and that proved wrong in practice: after a
+sideways move the block stayed offset sideways, as if pulled by sideways gravity, which
+the author noticed within seconds of watching it. Only \emph{upward} displacement was
+therefore scaled, so that a heavy block hung below the hand and came level again when
+lowered. A plain gain also let a heavy block drift arbitrarily far from the hand on a
+long lift, so the shortfall levelled off with height, at about 15\,cm for the heaviest
+block. Held objects were kinematic, and each was handed back to the physics engine on
+release, so the simulation and the cue did not fight.
+
+\textbf{Departures from the proposal.} The cue applied to held objects only; because
+the plank was not grasped, a loaded lever had no cue of its own, and its behavior was
+shown by its tilt. The lever's hinge received a light centering spring, because loads
+resting on top of a pivot are an unstable equilibrium; it behaved like a beam balance.
+Two separate builds proved unnecessary, since a single build could set the cue from the
+condition. The questions moved from a laptop into the headset so that one log captured
+everything, and a standalone Quest build and hand tracking were set aside in favor of
+Quest Link and controllers.
 
 \begin{figure}[h]
   \centering
   \includegraphics[width=\columnwidth]{HandDrawnMockup.jpeg}
-  \caption{Hand-drawn concept sketch. From the learner's first-person view: a
-  menu panel (create a material, create a mechanical device, and so on), two
-  objects balanced on a lever over a fulcrum on a flat ground plane, and a
-  tracked VR hand for direct grab-and-place interaction.}
+  \caption{Hand-drawn concept sketch from the proposal. From the learner's first-person
+  view: a menu panel, two objects balanced on a lever over a fulcrum on a flat ground
+  plane, and a tracked VR hand for direct grab-and-place interaction.}
   \label{fig:mockup}
 \end{figure}
 
 \begin{figure}[h]
   \centering
   \includegraphics[width=\columnwidth]{GeminiEnhancedMockup.jpeg}
-  \caption{AI-enhanced render of the same scene (generated with Google Gemini
-  from the sketch in Figure~\ref{fig:mockup}). A labeled steel block and
-  concrete cylinder rest on a lever, showing how the learner reads object
-  properties and manipulates them by hand while the floating menu spawns new
-  materials and mechanisms.}
+  \caption{AI-enhanced render of the same concept (generated with Google Gemini from the
+  sketch in Figure~\ref{fig:mockup}).}
   \label{fig:mockup-render}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\columnwidth]{prototype-sandbox.png}
+  \caption{The built sandbox: the same-mass and same-size block sets, the lever, the
+  water tank, the ramp on its side table, and the two panels.}
+  \label{fig:prototype}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\columnwidth]{prototype-experiment.png}
+  \caption{Experiment mode, as seen on the experimenter's desktop. The participant read
+  and answered on the panel; the strip across the top, which showed the condition, was
+  drawn on the desktop only and never reached the headset.}
+  \label{fig:experiment}
 \end{figure}
 
 \section{Prototype Validation}
 \label{sec:validation}
-Before any human data is collected, the prototype must be shown to behave
-correctly, and these system-level checks are a precondition for a meaningful
-study. \textbf{Physics fidelity:} automated checks compare each scenario against
-its closed-form prediction within a 5\% tolerance, for example that equal-mass
-blocks show the correct relative volumes, objects float or sink by density, ramp
-sliding follows the friction coefficient, and a lever balances at the computed
-load position. \textbf{Pseudo-haptic behavior:} the cues must be monotonic, a
-heavier object always feeling heavier and a more heavily loaded lever always
-harder to move, with gain and lag mapping to mass and load in the intended
-direction across the full range of materials and loads. \textbf{Performance:} the
-scene must hold 72\,Hz on the Quest~2 so the cue is not confounded by dropped
-frames. \textbf{Development workflow:} because agentic AI is our build method, we
-report which parts of the implementation the coding agent produced through tool
-use and iteration and where human correction was needed, drawn from a task log
-kept from the first day of development. Passing these checks establishes that the
-two builds differ only in the presence of the weight cue, which is what the study
-in Section~\ref{sec:methodology} requires.
+Before any human data was collected, the prototype had to be shown to behave correctly,
+as a precondition for a meaningful study. \textbf{Physics fidelity:} scripted checks
+compared each scenario against its closed-form prediction with a 5\% tolerance.
+Submerged fractions matched density ratios (pine 0.500, ice 0.917, with aluminum and
+steel sinking). The lever balanced when the torques matched (1.88 against 1.80\,N$\cdot$m,
+settling at $-0.2^\circ$). On the ramp, each material was released from rest at three
+slopes (Table~\ref{tab:ramp}). Blocks stayed put when the slope's tangent was below the
+static friction and otherwise accelerated within 3.1\% of $g(\sin\theta -
+\mu_d\cos\theta)$; pine and steel, with equal friction and a nearly sixteen-fold mass
+difference, gave the same result.
+
+\begin{table}[h]
+  \caption{Ramp check: predicted and measured acceleration (m/s$^2$) from rest over
+  60\,cm. At 12.5$^\circ$, the study's slope, only ice overcame static friction; the
+  other blocks moved 0.2\,cm or less.}
+  \label{tab:ramp}
+  \begin{tabular}{lcccccc}
+    \toprule
+    & \multicolumn{2}{c}{12.5$^\circ$} & \multicolumn{2}{c}{20$^\circ$} & \multicolumn{2}{c}{25$^\circ$} \\
+    Material & pred. & meas. & pred. & meas. & pred. & meas. \\
+    \midrule
+    Pine (0.50\,kg)     & 0 & 0 & 0.81 & 0.82 & 1.69 & 1.73 \\
+    Ice (0.92\,kg)      & 1.11 & 1.12 & 2.38 & 2.45 & 3.20 & 3.21 \\
+    Aluminum (2.70\,kg) & 0 & 0 & 1.20 & 1.23 & 2.07 & 2.10 \\
+    Steel (7.85\,kg)    & 0 & 0 & 0.81 & 0.82 & 1.69 & 1.73 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\textbf{Pseudo-haptic behavior:} unit tests swept the full mass range and confirmed that
+gain never rose and lag never fell with mass, that displayed lift never rose with mass,
+and that the offset stayed bounded. In Play mode, a 30\,cm hand lift left a 7.85\,kg
+block 12.7\,cm below the hand and a 0.5\,kg block 2.5\,cm below it, and a further 50\,cm
+sideways move left both offsets unchanged. \textbf{Experiment mode:} unit tests confirmed that twelve
+participants filled the four orders equally and that the heaviness trials were balanced
+across sides, and a scripted participant completed full sessions through the real grab
+and button pipeline, 58 responses and 39 grabs per session with no errors, its data marked
+as a self-test. \textbf{Performance:} because
+dropped frames would confound the cue, each session logged the mean frame rate of each
+block and the number of frames over a 72\,Hz budget.
+%% TODO(Sven): after your headset run, add the fps from the session.txt, e.g.
+%% "the scene held X fps over Quest Link".
+\textbf{Development workflow:} because agentic AI was our build method, we reported which
+parts of the implementation the coding agent produced through tool use and iteration and
+where human correction was needed, drawn from a task log kept from the first day of
+development. The checks also caught real defects: the ramp check showed that the physics
+engine's default friction model held blocks at slopes where the closed form said they
+should slide, and enabling its improved patch friction brought the results within
+tolerance. Passing these checks established that the two conditions differed only in the
+weight cue, which was what the study in Section~\ref{sec:methodology} required.
 
 \section{Methodology}
 \label{sec:methodology}
-Making a physical quantity \emph{felt} is only worthwhile if it changes what
-learners understand, so beyond validating the system we conducted a controlled
-study with human participants. It asked one question: does a pseudo-haptic weight
-cue, added to direct manipulation in VR, change how accurately learners predict
-outcomes that depend on mass, density, and load, compared with the same
-manipulation without the cue? We report the study using the standard structure of
-participants, apparatus, procedure, and design.
+Making a physical quantity \emph{felt} was only worthwhile if it changed what learners
+understood, so beyond validating the system we conducted a controlled study with human
+participants. It asked one question: did a pseudo-haptic weight cue, added to direct
+manipulation in VR, change how accurately learners predicted outcomes that depended on
+mass, density, and load, compared with the same manipulation without the cue? We report
+the study using the standard structure of participants, apparatus, procedure, and design.
 
 \subsection{Participants}
-Twelve participants (the class minimum for a repeated-measures design) were
-recruited from non-physics courses, targeting students who had not taken
-university physics so that measurable misconceptions were present to begin with.
-Recruitment used the standard class data-collection form. The project was not
-intended for outside publication, so no IRB submission was required; were
-publication pursued later, an IRB with a faculty principal investigator would be
-arranged before any recruitment began. Participation took about 40 minutes, and
-participants could stop at any time.
+Twelve participants (the class minimum for a repeated-measures design) were recruited
+from non-physics courses, targeting students who had not taken university physics so
+that measurable misconceptions were present to begin with. Recruitment used the standard
+class data-collection form. The project was not intended for outside publication, so no
+IRB submission was required; had publication been pursued later, an IRB with a faculty
+principal investigator would have been arranged before any recruitment began.
+Participation took about 30 minutes, and participants could stop at any time. Participants
+were identified only by a two-digit ID.
 
 \subsection{Apparatus}
-The study used a Meta Quest~2 running the sandbox described above, built in
-Unity~6 with the XR Interaction Toolkit and OpenXR. Two builds were prepared that
-were visually identical and differed only in the weight cue. In the cue-on build,
-control-to-display gain and visual lag tracked an object's mass and the lever's
-load, so that a heavier object felt heavier and a more heavily loaded lever felt
-harder to move; the cue-off build used plain grab-and-place with no such
-modulation. Held objects were made kinematic while grasped, the cue was applied
-to the displayed position, and each object was handed back to the physics engine
-on release, so that the simulation and the cue did not fight. Before any session,
-the prototype passed the validation checks of Section~\ref{sec:validation}:
-each scenario matched its closed-form prediction within 5\%, the cue was
-monotonic across the full range of materials and loads, and the scene held
-72\,Hz. The pre/post test, heaviness judgments, and questionnaire were
-administered on a laptop between VR blocks.
+The study used a Meta Quest~2 over Quest Link, running the sandbox of
+Section~\ref{sec:system} in the prototype's experiment mode. The same build served both
+conditions. With the cue on, gain and lag tracked the held object's mass; with the cue
+off, objects followed the hand one to one. The panel of readings and the debug line
+between hand and object were hidden, so that the two conditions looked identical except
+for how objects moved. Participants read and answered on a panel in the scene, pointing a
+controller at a button and squeezing the grip or pulling the trigger; the grip was also
+how they grabbed blocks. The experimenter's desktop showed the current condition, which
+was not drawn in the headset. Before any session, the prototype passed the validation
+checks of Section~\ref{sec:validation}.
+
+Every session wrote three files, flushed after each row so that a crash lost nothing: a
+responses file with one row per answer or task (choice, correctness, response time,
+completion time, falls, and task measures), an interactions file with one row per grab
+(mass, hold time, hand lift, peak offset, gain, and lag), and a session file with the order,
+device, and frame rates. Pilot and self-test runs were marked as such in each row and
+excluded from analysis.
 
 \subsection{Procedure}
-Each participant completed a pre-test, then a short training scene to learn
-grab-and-place interaction, then two blocks of four scenes each (blocks covered
-same-mass block comparison, buoyancy in a tank, sliding on a ramp, and balancing
-a lever). Each block was followed by a post-test, and the session ended with a
-brief interview about what felt different between the two blocks. After each pair
-of blocks, participants also made a two-alternative forced-choice heaviness
-judgment (which block felt heavier) and completed a five-item
-presence-and-comfort questionnaire.
+The experimenter entered the participant's ID, which set the condition order. Each
+participant then completed a short training scene to learn pointing and grab-and-place,
+followed by two blocks, one per condition. Each block ran the same sequence: a six-item
+pre-test; the four scenes of Table~\ref{tab:scenes}; six heaviness trials; the post-test;
+and a five-item questionnaire. Participants stood at a station for each task and were moved
+between stations automatically, so no walking or joystick travel was involved. In each
+scene they first committed to a prediction, then carried out the task, then saw the
+outcome. A heaviness trial presented two identical unmarked gray cubes of different mass;
+participants lifted both and chose which felt heavier, with six mass pairs differing by a
+factor of four to sixteen and the heavier block on each side equally often. The session
+ended with a brief interview about what felt different between the two blocks.
+
+\begin{table}[h]
+  \caption{The four scenes in each scenario set. Set A and set B used different block
+  pairings, so no participant saw the same scene twice.}
+  \label{tab:scenes}
+  \begin{tabular}{p{0.2\columnwidth}p{0.33\columnwidth}p{0.33\columnwidth}}
+    \toprule
+    Scene & Set A & Set B \\
+    \midrule
+    Same mass & 1\,kg pine and aluminum: which is heavier? & 1\,kg ice and steel: which is heavier? \\
+    Buoyancy & 1\,L ice, then aluminum: float or sink? & 1\,L pine, then steel: float or sink? \\
+    Ramp & 1\,L ice and steel: which slides farther? & 1\,L ice and aluminum: which slides farther? \\
+    Lever & Ice balances aluminum at 10\,cm: predict, then place (29.4\,cm) & Aluminum balances steel at 5\,cm: predict, then place (14.5\,cm) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
 
 \subsection{Design}
-The experiment was within subjects with one independent variable, the
-\emph{weight cue} (on vs.\ off). Cue order was counterbalanced across
-participants, and two matched scenario sets (A and B) were paired with the two
-cue conditions so that no participant saw the same scene twice; set was
-counterbalanced against cue condition.
+The experiment was within subjects with one independent variable, the \emph{weight cue}
+(on vs.\ off). Cue order was counterbalanced across participants, and the two matched
+scenario sets (A and B) were paired with the two cue conditions; set was counterbalanced
+against cue condition. Crossing the two gave four orders, assigned from the participant ID,
+so that twelve participants filled each order three times.
 
-The primary dependent variable was \emph{prediction accuracy} on a short
-misconception test given before and after each block. Its six items followed the
-style of the Force Concept Inventory~\cite{hestenes1992force}: which of two
-equal-mass blocks is larger, which floats, which slides farther down a ramp,
-where a lever balances, and two transfer items using materials not present in the
-sandbox. Secondary dependent variables were the forced-choice heaviness judgment
-(a manipulation check that the cue was perceived at all), task completion time,
-and the presence-and-comfort score.
+The primary dependent variable was \emph{prediction accuracy} on a short misconception test
+given before and after each block, in a form matched to that block's set. Its six items
+followed the style of the Force Concept Inventory~\cite{hestenes1992force}: which of two
+equal-mass blocks is larger, which floats, which slides farther down a ramp, where a lever
+balances, and two transfer items using materials not present in the sandbox. Secondary
+dependent variables were the forced-choice heaviness judgment (a manipulation check that the
+cue was perceived at all), predictions in the scenes, task completion time, lever placement
+error, and the presence score (the mean of four seven-point items), with the fifth item
+reported separately as comfort.
 
 We tested three hypotheses:
 \begin{itemize}
-  \item \textbf{H1:} the gain in prediction accuracy from pre-test to post-test
-        was larger with the cue on than with the cue off.
-  \item \textbf{H2:} heaviness judgments were above chance with the cue on and at
-        chance with the cue off (the manipulation check).
+  \item \textbf{H1:} the gain in prediction accuracy from pre-test to post-test was larger
+        with the cue on than with the cue off.
+  \item \textbf{H2:} heaviness judgments were above chance with the cue on and at chance with
+        the cue off (the manipulation check).
   \item \textbf{H3:} reported presence was higher with the cue on.
 \end{itemize}
-H1 was tested with a $2\times2$ repeated-measures ANOVA on accuracy (cue $\times$
-pre/post), with the interaction term as the effect of interest; H2 with a
-binomial test against chance in each condition; and H3 with a paired $t$-test on
-the presence score.
+H1 was tested with a $2\times2$ repeated-measures ANOVA on accuracy (cue $\times$ pre/post),
+with the interaction term as the effect of interest; H2 with a binomial test against chance
+in each condition; and H3 with a paired $t$-test on the presence score.
 
-\section{Deliverables}
+\section{Status and Remaining Work}
 \label{sec:deliverables}
-By \textbf{mid-November}:
-\begin{itemize}
-  \item A Unity 6 scene on Quest 2 with grab-and-place interaction for at least
-        four materials, a working balance, a water tank, and a ramp, plus one
-        mechanical device (a lever), all with pseudo-haptic weight and force
-        modulation (gain and visual lag).
-  \item Automated physics-fidelity checks comparing the simulation against
-        closed-form predictions for density, buoyancy, friction, and the lever.
-  \item In-scene logging of interactions and outcomes to file.
-\end{itemize}
-Toward the \textbf{early-December} presentation:
-\begin{itemize}
-  \item An expanded sandbox adding at least one more concept (for example a
-        pulley or projectile launcher) built on the same interaction and physics
-        framework, delivered as two builds (cue on and cue off) for the study.
-  \item The within-subjects study of Section~\ref{sec:methodology} run with
-        twelve non-physics students, with the pre/post misconception
-        test, heaviness manipulation check, and presence questionnaire analyzed
-        as described.
-  \item A recorded demonstration video walking through each concept on-device.
-  \item The paper extending this proposal, documenting the design, the system and
-        human evaluation, and a report on the agentic-AI development workflow used
-        to build it, grounded in the day-one development log.
-\end{itemize}
-\textbf{Roles:} This is a solo project (group CS567\_SVEN). Sven Skoglund is
-responsible for all work, including the Unity interaction and pseudo-haptics, the
-physics-fidelity checks, the demonstration, and directing the agentic-AI
-development workflow.
+By the mid-point demonstration in early November, the following were complete: a Unity~6
+scene for the Quest~2 with grab-and-place for four materials, a lever, a water tank, and a
+ramp, with pseudo-haptic weight modulation; scripted physics-fidelity checks against closed
+forms for density, buoyancy, friction, and the lever; and an experiment mode that took a
+participant ID, set the counterbalanced order, ran the training, the trials, and the
+questions, and logged all of it to file.
+
+Remaining at that point were: at least one more concept built on the same framework (for
+example a pulley or projectile launcher); recruiting and running the twelve-participant study
+and analyzing it as described; a recorded demonstration of each concept; and the paper
+extending this one, documenting the design, the system and human evaluation, and the
+agentic-AI development workflow, grounded in the day-one development log.
+
+\textbf{Roles:} This was a solo project (group CS567\_SVEN). Sven Skoglund was responsible for
+all work, including the Unity interaction and pseudo-haptics, the physics-fidelity checks, the
+demonstration, and directing the agentic-AI development workflow.
 
 \section{Conclusion}
-We are building a VR physics sandbox that turns abstract relationships, from
-density and friction to the mechanics of levers and pulleys, into things a
-learner can feel and test through direct, embodied manipulation. The application
-is pure VR with no in-scene agent; agentic AI is the workflow used to build it.
-The class should expect a working Quest 2 demonstration, automated checks that
-the simulation matches the underlying physics, a within-subjects study of whether
-the weight cue improves learners' physical predictions, and a report on how the
-agentic-AI development process shaped the result.
+We built a VR physics sandbox that turned abstract relationships, from density and friction to
+the mechanics of the lever, into things a learner could feel and test through direct, embodied
+manipulation. The application was pure VR with no in-scene agent; agentic AI was the workflow
+used to build it. Its validation showed the simulation matching the underlying physics, and its
+experiment mode made the within-subjects study of the weight cue ready to run.
 
 \section*{Use of AI}
-Generative AI (a large language model) was used to help locate candidate
-peer-reviewed references and to critique the argument and grammar of drafts.
-Google Gemini generated the enhanced mockup in Figure~\ref{fig:mockup-render}
-from the author's hand-drawn sketch (Figure~\ref{fig:mockup}). The
-implementation is planned as an agentic-AI development effort in which an AI
-coding agent assists in writing and iterating on the Unity project under the
-author's direction, and this will be documented in the final paper. All prose in
-this proposal was reviewed and revised by the author, and every cited work was
-read and verified by the author.
+Generative AI (a large language model) was used to help locate candidate peer-reviewed
+references and to critique the argument and grammar of drafts. Google Gemini generated the
+enhanced mockup in Figure~\ref{fig:mockup-render} from the author's hand-drawn sketch
+(Figure~\ref{fig:mockup}). The implementation was an agentic-AI development effort in which an
+AI coding agent wrote and iterated on the Unity project under the author's direction, and helped
+revise this paper, as recorded in the development log. All prose was reviewed and revised by the
+author, and every cited work was read and verified by the author.
 
 %% ---------------------------------------------------------------- references
 \bibliographystyle{ACM-Reference-Format}

@@ -15,6 +15,8 @@ namespace PhysicsSandbox
         [SerializeField] TextMeshPro m_Text;
         [SerializeField] Lever m_Lever;
         [SerializeField] WaterVolume m_Water;
+        [SerializeField] Ramp m_Ramp;
+        [SerializeField] GameObject m_PanelRoot;
 
         InputAction m_ToggleCue;
         InputAction m_ToggleGhost;
@@ -37,6 +39,19 @@ namespace PhysicsSandbox
         {
             get => m_Water;
             set => m_Water = value;
+        }
+
+        public Ramp Ramp
+        {
+            get => m_Ramp;
+            set => m_Ramp = value;
+        }
+
+        /// <summary>Everything drawn for the panel, hidden while experiment mode runs.</summary>
+        public GameObject PanelRoot
+        {
+            get => m_PanelRoot;
+            set => m_PanelRoot = value;
         }
 
         void Awake()
@@ -75,6 +90,13 @@ namespace PhysicsSandbox
 
         void Update()
         {
+            // The participant must not see or change the condition.
+            if (m_PanelRoot != null && m_PanelRoot.activeSelf == ExperimentSession.IsActive)
+                m_PanelRoot.SetActive(!ExperimentSession.IsActive);
+
+            if (ExperimentSession.IsActive)
+                return;
+
             if (m_ToggleCue.WasPressedThisFrame())
                 PseudoHapticSettings.CueEnabled = !PseudoHapticSettings.CueEnabled;
 
@@ -152,6 +174,19 @@ namespace PhysicsSandbox
 
                 if (!any)
                     sb.Append("<color=#9AA5B1>empty</color>\n");
+            }
+
+            if (m_Ramp != null)
+            {
+                sb.Append("\n<b>Ramp</b>  <size=70%>").Append(m_Ramp.AngleDeg.ToString("0.0")).Append("°</size>\n");
+                var run = m_Ramp.LastRun;
+                if (run == null)
+                    sb.Append("<color=#9AA5B1>no slide yet</color>\n");
+                else if (run.DistanceM < 0.02f)
+                    sb.Append(run.Block.MaterialName).Append(" stayed put\n");
+                else
+                    sb.Append(run.Block.MaterialName).Append(" slid ").Append((run.DistanceM * 100f).ToString("0")).Append(" cm in ")
+                        .Append(run.MovingSeconds.ToString("0.0")).Append(" s\n");
             }
 
             return sb.ToString();

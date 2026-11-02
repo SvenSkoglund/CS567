@@ -53,5 +53,18 @@ namespace PhysicsSandbox
 
         /// <summary>Distance from the pivot at which <paramref name="massB"/> balances massA placed at armA.</summary>
         public static float BalancingArmM(float massA, float armA, float massB) => massA * armA / massB;
+
+        /// <summary>Friction between two surfaces under the physics engine's default (average) combine mode.</summary>
+        public static float CombinedFriction(float a, float b) => (a + b) * 0.5f;
+
+        /// <summary>A resting block starts to slide when the slope's tangent exceeds the static friction.</summary>
+        public static bool WillSlide(float slopeDeg, float staticFriction) => Mathf.Tan(slopeDeg * Mathf.Deg2Rad) > staticFriction;
+
+        /// <summary>Acceleration down a slope; zero when friction holds the block.</summary>
+        public static float SlideAcceleration(float slopeDeg, float dynamicFriction, float g = 9.81f)
+        {
+            var angle = slopeDeg * Mathf.Deg2Rad;
+            return Mathf.Max(0f, g * (Mathf.Sin(angle) - dynamicFriction * Mathf.Cos(angle)));
+        }
     }
 }

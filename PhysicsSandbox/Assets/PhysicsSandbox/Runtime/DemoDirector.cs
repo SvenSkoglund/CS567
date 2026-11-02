@@ -94,7 +94,7 @@ namespace PhysicsSandbox
 
         public void StartDemo(bool narrated)
         {
-            if (IsRunning)
+            if (IsRunning || ExperimentSession.IsActive)
                 return;
 
             if (XRSettings.isDeviceActive)

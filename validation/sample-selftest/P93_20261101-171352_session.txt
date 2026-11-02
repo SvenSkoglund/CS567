@@ -1,0 +1,11 @@
+participant: P93
+run_type: selftest
+order: 1 of 4 (cue ON set A, then cue OFF set B)
+started: 2026-11-01 17:13:52
+device: desktop simulator
+unity: 6000.4.7f1
+block 1 (cue ON set A): mean 513.0 fps over 89 s, 11 of 45739 frames over the 72 Hz budget, refresh 0 Hz
+block 2 (cue OFF set B): mean 509.6 fps over 94 s, 7 of 47712 frames over the 72 Hz budget, refresh 0 Hz
+summary cue ON set A: pretest 3/6, posttest 3/6, heaviness 3/6, presence 4.75, comfort 4, task time 51.4 s
+summary cue OFF set B: pretest 2/6, posttest 2/6, heaviness 4/6, presence 3.75, comfort 6, task time 56.0 s
+ended: 2026-11-01 17:17:00 (completed), 189 s, 58 responses, 39 grabs

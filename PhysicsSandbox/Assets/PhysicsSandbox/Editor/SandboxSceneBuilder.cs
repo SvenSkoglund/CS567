@@ -10,7 +10,7 @@ namespace PhysicsSandbox.Editor
     /// <summary>
     /// Generates the sandbox scene from code so the layout is reproducible and reviewable:
     /// the template's XR rig and floor, plus a workbench with two block sets, a lever and a
-    /// water tank, and the readout panel.
+    /// water tank, a side table with a ramp, the readout panel and the experiment panel.
     /// </summary>
     public static class SandboxSceneBuilder
     {
@@ -23,6 +23,15 @@ namespace PhysicsSandbox.Editor
         const float k_FrontRowZ = 0.50f;
         const float k_LeverSpring = 15f;
         const float k_LeverDamper = 1f;
+
+        // Shallow enough that only ice overcomes static friction, and that a nudged aluminum or
+        // steel block stops again, so the outcome is unambiguous.
+        const float k_RampAngleDeg = 12.5f;
+        const float k_RampLength = 0.75f;
+        const float k_RampWidth = 0.24f;
+        const float k_RampFriction = 0.15f;
+        const float k_RampStartAlong = 0.12f;
+        const float k_UnmarkedSide = 0.10f;
 
         [MenuItem("CS567/Build Sandbox Scene")]
         public static string Build()
@@ -61,7 +70,7 @@ namespace PhysicsSandbox.Editor
             float[] equalMassX = { -0.97f, -0.80f, -0.67f, -0.57f };
             for (var i = 0; i < MaterialLibrary.All.Length; i++)
                 CreateBlock(equalMass, MaterialLibrary.All[i], 1f, new Vector3(equalMassX[i], k_TableTop, k_FrontRowZ), lineMaterial);
-            CreateSign("Equal Mass Sign", root, "SAME MASS  ·  1 kg each", new Vector3(-0.78f, k_TableTop + 0.001f, 0.385f));
+            var equalMassSign = CreateSign("Equal Mass Sign", root, "SAME MASS  ·  1 kg each", new Vector3(-0.78f, k_TableTop + 0.001f, 0.385f));
 
             // Equal-volume set: same size, so the weight cue alone tells them apart.
             var equalVolume = new GameObject("Equal Volume Set").transform;
@@ -72,13 +81,39 @@ namespace PhysicsSandbox.Editor
                 var material = MaterialLibrary.All[i];
                 CreateBlock(equalVolume, material, material.densityKgPerM3 * litre, new Vector3(-0.32f + 0.15f * i, k_TableTop, k_FrontRowZ), lineMaterial);
             }
-            CreateSign("Equal Volume Sign", root, "SAME SIZE  ·  1 litre each", new Vector3(-0.095f, k_TableTop + 0.001f, 0.385f));
+            var equalVolumeSign = CreateSign("Equal Volume Sign", root, "SAME SIZE  ·  1 litre each", new Vector3(-0.095f, k_TableTop + 0.001f, 0.385f));
 
-            var lever = CreateLever(root, new Vector3(-0.38f, k_TableTop, 0.86f), woodLight, darkMetal);
+            var lever = CreateLever(root, new Vector3(-0.38f, k_TableTop, 0.74f), woodLight, darkMetal);
             var waterVolume = CreateTank(root, new Vector3(0.74f, k_TableTop, 0.70f), glass, water);
             CreateSign("Tank Sign", root, "WATER TANK  ·  1000 kg/m³", new Vector3(0.74f, k_TableTop + 0.001f, 0.385f));
 
-            CreateHud(root, new Vector3(0.45f, 1.60f, 1.35f), panel, lever, waterVolume);
+            var sideTable = CreateBox("Side Table", root, new Vector3(1.75f, k_TableTop * 0.5f, 0.70f), new Vector3(1.10f, k_TableTop, 0.70f), woodDark, true);
+            sideTable.GetComponent<Collider>().sharedMaterial = table.GetComponent<Collider>().sharedMaterial;
+            var green = CreateMaterial("StartLine", new Color(0.25f, 0.80f, 0.40f), 0f, 0f, unlit: true);
+            var ramp = CreateRamp(root, new Vector3(1.75f, k_TableTop, 0.66f), woodLight, darkMetal, green);
+
+            CreateHud(root, new Vector3(0.45f, 1.60f, 1.35f), panel, lever, waterVolume, ramp);
+
+            var unmarkedMaterial = CreateMaterial("Unmarked", new Color(0.55f, 0.56f, 0.58f), 0f, 0.3f);
+            var unmarkedSet = new GameObject("Unmarked Study Blocks").transform;
+            unmarkedSet.SetParent(root, false);
+            var unmarkedLeft = CreateUnmarkedBlock(unmarkedSet, "Unmarked Left", new Vector3(-0.28f, k_TableTop, 0.50f), unmarkedMaterial, lineMaterial);
+            var unmarkedRight = CreateUnmarkedBlock(unmarkedSet, "Unmarked Right", new Vector3(0.08f, k_TableTop, 0.50f), unmarkedMaterial, lineMaterial);
+
+            var trainingPad = CreateBox("Training Pad", root, new Vector3(0.08f, k_TableTop + 0.001f, 0.50f), new Vector3(0.16f, 0.002f, 0.16f), green, false);
+
+            var session = new GameObject("Experiment Session").AddComponent<ExperimentSession>();
+            session.transform.SetParent(root, false);
+            session.Panel = CreateExperimentPanel(root, new Vector3(-0.70f, 1.47f, 1.30f), panel);
+            session.Lever = lever;
+            session.Water = waterVolume;
+            session.Ramp = ramp;
+            session.UnmarkedLeft = unmarkedLeft;
+            session.UnmarkedRight = unmarkedRight;
+            session.TrainingPad = trainingPad;
+            session.HideDuringStudy = new[] { equalMassSign.gameObject, equalVolumeSign.gameObject };
+            unmarkedLeft.gameObject.SetActive(false);
+            unmarkedRight.gameObject.SetActive(false);
 
             var director = new GameObject("Demo Director").AddComponent<DemoDirector>();
             director.transform.SetParent(root, false);
@@ -94,7 +129,7 @@ namespace PhysicsSandbox.Editor
             EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(k_ScenePath, true) };
             AssetDatabase.SaveAssets();
 
-            return $"built {k_ScenePath}: {equalMass.childCount + equalVolume.childCount} blocks, " +
+            return $"built {k_ScenePath}: {equalMass.childCount + equalVolume.childCount + unmarkedSet.childCount} blocks, " +
                 $"simulator prefab {(loader.SimulatorPrefab != null ? "found" : "MISSING")}";
         }
 
@@ -141,6 +176,171 @@ namespace PhysicsSandbox.Editor
             label.transform.position = root.transform.position + Vector3.up * (side * 0.5f + 0.015f);
 
             return block;
+        }
+
+        // Identical gray cubes for the heaviness trials: nothing but the cue separates them.
+        static PhysicsBlock CreateUnmarkedBlock(Transform parent, string name, Vector3 tablePosition, Material material, Material lineMaterial)
+        {
+            var root = new GameObject(name);
+            root.transform.SetParent(parent, false);
+            root.transform.position = tablePosition + Vector3.up * (k_UnmarkedSide * 0.5f + 0.002f);
+
+            var visual = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            Object.DestroyImmediate(visual.GetComponent<Collider>());
+            visual.name = "Visual";
+            visual.transform.SetParent(root.transform, false);
+            visual.transform.localScale = Vector3.one * k_UnmarkedSide;
+            visual.GetComponent<Renderer>().sharedMaterial = material;
+
+            var box = root.AddComponent<BoxCollider>();
+            box.size = Vector3.one * k_UnmarkedSide;
+            box.sharedMaterial = CreatePhysicsMaterial("Unmarked", 0.5f);
+
+            var body = root.AddComponent<Rigidbody>();
+            body.mass = 1f;
+            body.interpolation = RigidbodyInterpolation.Interpolate;
+            body.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+
+            var block = root.AddComponent<PhysicsBlock>();
+            block.Configure(new MaterialDef("Unmarked", 1f / (k_UnmarkedSide * k_UnmarkedSide * k_UnmarkedSide), 0.5f, Color.gray, 0f, 0.3f), 1f);
+
+            var grab = root.AddComponent<XRGrabInteractable>();
+            grab.movementType = XRBaseInteractable.MovementType.Kinematic;
+            grab.useDynamicAttach = true;
+            grab.throwOnDetach = false;
+            grab.smoothPosition = false;
+            grab.smoothRotation = false;
+
+            root.AddComponent<PseudoHapticGrabTransformer>();
+            root.AddComponent<PseudoHapticGhost>().LineMaterial = lineMaterial;
+            return block;
+        }
+
+        static Ramp CreateRamp(Transform parent, Vector3 lowerMidpoint, Material surfaceMaterial, Material metal, Material startMaterial)
+        {
+            const float thickness = 0.02f;
+            const float railHeight = 0.03f;
+            const float railWidth = 0.008f;
+
+            var root = new GameObject("Ramp").transform;
+            root.SetParent(parent, false);
+
+            var angle = k_RampAngleDeg * Mathf.Deg2Rad;
+            var rotation = Quaternion.Euler(0f, 0f, -k_RampAngleDeg);
+            var along = rotation * Vector3.right;
+            var up = rotation * Vector3.up;
+
+            // The low end rests on the table, around the given centre of the ramp's footprint.
+            var height = Mathf.Sin(angle) * k_RampLength * 0.5f;
+            var center = new Vector3(lowerMidpoint.x, lowerMidpoint.y + height + thickness * 0.5f + 0.002f, lowerMidpoint.z);
+
+            var surface = CreateBox("Ramp Surface", root, center, new Vector3(k_RampLength, thickness, k_RampWidth), surfaceMaterial, true);
+            surface.transform.rotation = rotation;
+            surface.GetComponent<Collider>().sharedMaterial = CreatePhysicsMaterial("RampSurface", k_RampFriction);
+
+            // Rails and stop have no friction, so they contain a block without slowing it.
+            var slick = CreatePhysicsMaterial("Slick", 0f);
+            foreach (var side in new[] { -1f, 1f })
+            {
+                var rail = CreateBox("Ramp Rail", root,
+                    center + up * (thickness + railHeight) * 0.5f + Vector3.forward * side * (k_RampWidth - railWidth) * 0.5f,
+                    new Vector3(k_RampLength, railHeight, railWidth), metal, true);
+                rail.transform.rotation = rotation;
+                rail.GetComponent<Collider>().sharedMaterial = slick;
+            }
+
+            var stop = CreateBox("Ramp Stop", root,
+                center + along * (k_RampLength * 0.5f - 0.01f) + up * (thickness * 0.5f + 0.04f),
+                new Vector3(0.02f, 0.08f, k_RampWidth), metal, true);
+            stop.transform.rotation = rotation;
+            stop.GetComponent<Collider>().sharedMaterial = slick;
+
+            // A support under the high end, so the plank reads as propped up.
+            var topEnd = center - along * k_RampLength * 0.5f;
+            var support = CreateBox("Ramp Support", root,
+                new Vector3(topEnd.x + 0.03f, (lowerMidpoint.y + topEnd.y) * 0.5f, center.z),
+                new Vector3(0.05f, topEnd.y - lowerMidpoint.y, k_RampWidth), metal, false);
+            support.GetComponent<Renderer>().shadowCastingMode = ShadowCastingMode.On;
+
+            var surfaceTop = center + up * (thickness * 0.5f + 0.0005f);
+            var line = CreateBox("Ramp Start Line", root,
+                surfaceTop + along * (k_RampStartAlong - k_RampLength * 0.5f),
+                new Vector3(0.012f, 0.001f, k_RampWidth - 2f * railWidth), startMaterial, false);
+            line.transform.rotation = rotation;
+            line.GetComponent<Renderer>().shadowCastingMode = ShadowCastingMode.Off;
+
+            for (var cm = 10; cm < k_RampLength * 100f; cm += 10)
+            {
+                var tick = CreateBox("Ramp Tick " + cm, root,
+                    surfaceTop + along * (cm * 0.01f - k_RampLength * 0.5f) + Vector3.back * (k_RampWidth * 0.5f - 0.02f),
+                    new Vector3(0.003f, 0.001f, 0.03f), metal, false);
+                tick.transform.rotation = rotation;
+                tick.GetComponent<Renderer>().shadowCastingMode = ShadowCastingMode.Off;
+            }
+
+            CreateSign("Ramp Sign", parent, $"RAMP  ·  {k_RampAngleDeg:0.#}°  ·  start at the green line", new Vector3(lowerMidpoint.x, k_TableTop + 0.001f, 0.385f));
+
+            return surface.AddComponent<Ramp>();
+        }
+
+        static ExperimentPanel CreateExperimentPanel(Transform parent, Vector3 position, Material panelMaterial)
+        {
+            const int buttonCount = 7;
+            var size = new Vector2(1.16f, 0.86f);
+            var root = new GameObject("Experiment Panel");
+            root.transform.SetParent(parent, false);
+            root.transform.position = position;
+            root.transform.rotation = Quaternion.Euler(-6f, 0f, 0f);
+
+            var background = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            Object.DestroyImmediate(background.GetComponent<Collider>());
+            background.name = "Background";
+            background.transform.SetParent(root.transform, false);
+            background.transform.localPosition = new Vector3(0f, 0f, 0.005f);
+            background.transform.localScale = new Vector3(size.x, size.y, 1f);
+            var renderer = background.GetComponent<Renderer>();
+            renderer.sharedMaterial = panelMaterial;
+            renderer.shadowCastingMode = ShadowCastingMode.Off;
+
+            var title = CreateText("Title", root.transform, "Experiment mode", 0.50f, new Vector2(size.x - 0.08f, 0.07f), TextAlignmentOptions.TopLeft);
+            title.rectTransform.anchoredPosition = new Vector2(0f, size.y * 0.5f - 0.07f);
+            title.fontStyle = FontStyles.Bold;
+            title.color = new Color(1f, 0.72f, 0.35f);
+
+            var body = CreateText("Body", root.transform, "", 0.44f, new Vector2(size.x - 0.08f, 0.28f), TextAlignmentOptions.TopLeft);
+            body.rectTransform.anchoredPosition = new Vector2(0f, size.y * 0.5f - 0.25f);
+
+            var buttonMaterial = CreateMaterial("PanelButton", new Color(0.17f, 0.24f, 0.33f), 0f, 0f, unlit: true);
+            var buttons = new PanelButton[buttonCount];
+            for (var i = 0; i < buttonCount; i++)
+            {
+                var go = new GameObject("Button " + (i + 1));
+                go.transform.SetParent(root.transform, false);
+                go.AddComponent<BoxCollider>();
+
+                var quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
+                Object.DestroyImmediate(quad.GetComponent<Collider>());
+                quad.name = "Background";
+                quad.transform.SetParent(go.transform, false);
+                quad.transform.localPosition = new Vector3(0f, 0f, 0.002f);
+                var quadRenderer = quad.GetComponent<Renderer>();
+                quadRenderer.sharedMaterial = buttonMaterial;
+                quadRenderer.shadowCastingMode = ShadowCastingMode.Off;
+
+                var label = CreateText("Label", go.transform, "", 0.40f, new Vector2(1f, 0.08f), TextAlignmentOptions.Center);
+                go.AddComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRSimpleInteractable>();
+
+                var button = go.AddComponent<PanelButton>();
+                button.Label = label;
+                button.Background = quadRenderer;
+                buttons[i] = button;
+            }
+
+            var panel = root.AddComponent<ExperimentPanel>();
+            panel.Title = title;
+            panel.Body = body;
+            panel.Buttons = buttons;
+            return panel;
         }
 
         static Lever CreateLever(Transform parent, Vector3 tablePosition, Material plankMaterial, Material fulcrumMaterial)
@@ -239,9 +439,9 @@ namespace PhysicsSandbox.Editor
             return volume.AddComponent<WaterVolume>();
         }
 
-        static void CreateHud(Transform parent, Vector3 position, Material panelMaterial, Lever lever, WaterVolume water)
+        static void CreateHud(Transform parent, Vector3 position, Material panelMaterial, Lever lever, WaterVolume water, Ramp ramp)
         {
-            var size = new Vector2(1.05f, 0.92f);
+            var size = new Vector2(1.05f, 1.06f);
             var root = new GameObject("HUD Panel");
             root.transform.SetParent(parent, false);
             root.transform.SetPositionAndRotation(position, Quaternion.Euler(-8f, 12f, 0f));
@@ -258,17 +458,27 @@ namespace PhysicsSandbox.Editor
 
             var text = CreateText("Text", root.transform, "PHYSICS YOU CAN FEEL", 0.42f, size - new Vector2(0.08f, 0.08f), TextAlignmentOptions.TopLeft);
 
+            // The controller stays active to keep its physics settings and to bring the panel
+            // back after experiment mode, so what it hides is a child holding the visuals.
+            var visuals = new GameObject("Visuals");
+            visuals.transform.SetParent(root.transform, false);
+            background.transform.SetParent(visuals.transform, false);
+            text.transform.SetParent(visuals.transform, false);
+
             var hud = root.AddComponent<SandboxHud>();
             hud.Text = text;
             hud.Lever = lever;
             hud.Water = water;
+            hud.Ramp = ramp;
+            hud.PanelRoot = visuals;
         }
 
-        static void CreateSign(string name, Transform parent, string content, Vector3 position)
+        static TextMeshPro CreateSign(string name, Transform parent, string content, Vector3 position)
         {
             var sign = CreateText(name, parent, content, 0.3f, new Vector2(0.7f, 0.05f), TextAlignmentOptions.Center);
             sign.transform.SetPositionAndRotation(position, Quaternion.Euler(90f, 0f, 0f));
             sign.color = new Color(0.95f, 0.92f, 0.85f);
+            return sign;
         }
 
         static TextMeshPro CreateText(string name, Transform parent, string content, float fontSize, Vector2 size, TextAlignmentOptions alignment)

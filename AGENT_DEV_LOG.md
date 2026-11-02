@@ -245,6 +245,43 @@ Columns / fields per entry:
 
 ---
 
+### 2026-11-01 — Checkpoints 4 and 5: ramp, experiment mode, logging, paper
+- Task given: implement the Unity and paper changes for the combined checkpoints.
+  The author's answers to the agent's questions: Quest 2 works over Link, the author
+  performs the videos by hand, online section, build the ramp now. The author also
+  passed on professor feedback: write in past tense, show a person doing the task in
+  the Quest 2, add trial flow and logging, build the ramp, show your face.
+- Produced: `Runtime/Ramp.cs` and a side table; `Runtime/StudyDesign.cs`
+  (counterbalancing, parallel tests, questionnaire, heaviness trials);
+  `Runtime/ExperimentSession.cs` (ID entry, training, blocks, desktop-only experimenter
+  strip); `Runtime/ExperimentPanel.cs` and `PanelButton.cs` (point-and-squeeze answers);
+  `Runtime/StudyLog.cs`; `Runtime/ExperimentPilot.cs` (editor-only scripted participant
+  and ramp check); `Tests/EditMode/StudyDesignTests.cs`; `analysis/summarize.py`; a past
+  tense rewrite of the paper; the two slides; the recording guide.
+- Built? Yes. 28 unit tests pass. Scripted participant completed full sessions: 58
+  responses, 39 grabs, no errors, pointer reached the button on 63 of 63 presses. Ramp
+  acceleration within 3.1% of the closed form across materials and slopes.
+  NOT verified: anything on the real headset (the agent had no headset connected, so
+  everything ran in the simulator), and the paper's PDF build (no LaTeX on this machine;
+  a portable compiler download was blocked by the permission check, so the source only
+  passed static checks for references, citations and environments).
+- Human correction needed: the agent's plan was redirected by the professor's feedback
+  mid-task, and by the author's choice to play the videos by hand, which removed the
+  planned scripted video capture.
+- Notes: the ramp check found four real defects the agent had introduced or inherited.
+  (1) PhysX's default patch friction held blocks at slopes where they should slide;
+  enabling improved patch friction fixed it, taking pine at 20 degrees to 1.4% error.
+  (2) The ramp code read a scaled unit cube's collider as 1 x 1 x 1. (3) Teleporting a
+  sleeping rigidbody does not wake it, which would have left study blocks floating.
+  (4) Timing kept counting after a block hit the stop. Also: Unity refused to add an
+  editor-assembly MonoBehaviour at run time, so the pilot moved to the runtime assembly
+  behind `#if UNITY_EDITOR`; RectTransform positions set through `transform.localPosition`
+  did not survive scene saving; `DateTime.Now` jumped six hours within one session, so
+  log times now use one clock reading plus a monotonic timer. The first pointer check
+  read 36 of 63 because the rig smooths its aim; waiting for it gave 63 of 63.
+
+---
+
 ## Template (copy for each new entry)
 
 ### YYYY-MM-DD HH:MM — <short task title>

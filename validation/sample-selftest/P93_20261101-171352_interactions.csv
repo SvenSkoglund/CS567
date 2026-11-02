@@ -1,0 +1,40 @@
+timestamp,participant,run_type,block,cue,set,phase,item,object,mass_kg,hold_ms,max_hand_lift_m,max_offset_m,gain,lag_ms
+17:13:57.184,P93,selftest,0,,,training,grab_and_place,Unmarked Left,1,3482,0.14,0,1,0
+17:14:03.618,P93,selftest,1,on,A,scene_same_mass,pine_vs_aluminum,Pine 1 kg,1,1406,0.2,0.082,0.756,113
+17:14:05.624,P93,selftest,1,on,A,scene_same_mass,pine_vs_aluminum,Aluminum 1 kg,1,1405,0.2,0.082,0.756,113
+17:14:13.538,P93,selftest,1,on,A,scene_buoyancy,ice,Ice 0.92 kg,0.917,2890,0.537,0.166,0.771,106
+17:14:24.771,P93,selftest,1,on,A,scene_buoyancy,aluminum,Aluminum 2.7 kg,2.7,3481,0.679,0.317,0.581,194
+17:14:34.895,P93,selftest,1,on,A,scene_ramp,ice_vs_steel,Steel 7.85 kg,7.85,4379,0.591,0.346,0.393,280
+17:14:39.072,P93,selftest,1,on,A,scene_ramp,ice_vs_steel,Ice 0.92 kg,0.917,2910,0.374,0.121,0.771,106
+17:14:47.917,P93,selftest,1,on,A,scene_lever,ice_vs_aluminum,Ice 0.92 kg,0.917,2922,0.339,0.111,0.771,106
+17:14:54.791,P93,selftest,1,on,A,heaviness,trial_1,Unmarked Left,8,1403,0.198,0.151,0.389,282
+17:14:56.797,P93,selftest,1,on,A,heaviness,trial_1,Unmarked Right,0.5,1405,0.2,0.045,0.878,56
+17:14:59.411,P93,selftest,1,on,A,heaviness,trial_2,Unmarked Left,0.5,1404,0.2,0.045,0.878,56
+17:15:01.418,P93,selftest,1,on,A,heaviness,trial_2,Unmarked Right,4,1404,0.2,0.133,0.511,225
+17:15:04.033,P93,selftest,1,on,A,heaviness,trial_3,Unmarked Left,0.5,1404,0.2,0.045,0.878,56
+17:15:06.039,P93,selftest,1,on,A,heaviness,trial_3,Unmarked Right,2,1404,0.2,0.111,0.634,169
+17:15:08.607,P93,selftest,1,on,A,heaviness,trial_4,Unmarked Left,8,1406,0.2,0.151,0.389,282
+17:15:10.614,P93,selftest,1,on,A,heaviness,trial_4,Unmarked Right,2,1406,0.2,0.111,0.634,169
+17:15:13.182,P93,selftest,1,on,A,heaviness,trial_5,Unmarked Left,4,1406,0.2,0.133,0.511,225
+17:15:15.187,P93,selftest,1,on,A,heaviness,trial_5,Unmarked Right,1,1404,0.2,0.082,0.756,113
+17:15:17.803,P93,selftest,1,on,A,heaviness,trial_6,Unmarked Left,1,1404,0.2,0.082,0.756,113
+17:15:19.806,P93,selftest,1,on,A,heaviness,trial_6,Unmarked Right,8,1401,0.2,0.151,0.389,282
+17:15:32.771,P93,selftest,2,off,B,scene_same_mass,ice_vs_steel,Ice 1 kg,1,1404,0.2,0,1,0
+17:15:34.775,P93,selftest,2,off,B,scene_same_mass,ice_vs_steel,Steel 1 kg,1,1404,0.2,0,1,0
+17:15:43.595,P93,selftest,2,off,B,scene_buoyancy,pine,Pine 0.5 kg,0.5,3750,0.44,0,1,0
+17:15:56.562,P93,selftest,2,off,B,scene_buoyancy,steel,Steel 7.85 kg,7.85,3718,0.44,0.063,1,0
+17:16:06.117,P93,selftest,2,off,B,scene_ramp,ice_vs_aluminum,Aluminum 2.7 kg,2.7,3580,0.372,0.061,1,0
+17:16:12.006,P93,selftest,2,off,B,scene_ramp,ice_vs_aluminum,Ice 0.92 kg,0.917,3533,0.297,0.023,1,0
+17:16:21.495,P93,selftest,2,off,B,scene_lever,aluminum_vs_steel,Aluminum 2.7 kg,2.7,3512,0.267,0,1,0
+17:16:28.568,P93,selftest,2,off,B,heaviness,trial_1,Unmarked Left,0.5,1402,0.198,0.004,1,0
+17:16:30.575,P93,selftest,2,off,B,heaviness,trial_1,Unmarked Right,2,1405,0.2,0.016,1,0
+17:16:33.141,P93,selftest,2,off,B,heaviness,trial_2,Unmarked Left,4,1404,0.2,0,1,0
+17:16:35.148,P93,selftest,2,off,B,heaviness,trial_2,Unmarked Right,0.5,1406,0.2,0,1,0
+17:16:37.709,P93,selftest,2,off,B,heaviness,trial_3,Unmarked Left,0.5,1403,0.2,0,1,0
+17:16:39.717,P93,selftest,2,off,B,heaviness,trial_3,Unmarked Right,8,1404,0.2,0,1,0
+17:16:42.282,P93,selftest,2,off,B,heaviness,trial_4,Unmarked Left,4,1404,0.2,0,1,0
+17:16:44.288,P93,selftest,2,off,B,heaviness,trial_4,Unmarked Right,1,1404,0.2,0,1,0
+17:16:46.854,P93,selftest,2,off,B,heaviness,trial_5,Unmarked Left,1,1405,0.2,0,1,0
+17:16:48.859,P93,selftest,2,off,B,heaviness,trial_5,Unmarked Right,8,1404,0.2,0,1,0
+17:16:51.426,P93,selftest,2,off,B,heaviness,trial_6,Unmarked Left,8,1405,0.2,0,1,0
+17:16:53.430,P93,selftest,2,off,B,heaviness,trial_6,Unmarked Right,2,1403,0.2,0,1,0
