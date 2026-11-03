@@ -20,37 +20,30 @@ namespace PhysicsSandbox
             Set = set;
         }
 
-        public override string ToString() => $"{(CueOn ? "cue ON" : "cue OFF")} set {Set}";
+        public override string ToString() => CueOn ? "cue ON" : "cue OFF";
     }
 
     /// <summary>
-    /// Assigns each participant a block order. The four orders cross cue order with which
-    /// scenario set goes with the cue, so twelve participants give three of each.
+    /// Assigns each participant one cue setting for the whole session: odd IDs have the cue
+    /// on and even IDs off, so twelve participants give six of each. Everyone uses set A;
+    /// set B remains from the earlier design, in which each person did both conditions.
     /// </summary>
     public static class Counterbalance
     {
-        public const int OrderCount = 4;
+        public const int GroupCount = 2;
 
         /// <summary>IDs from here up are logged as pilot runs, not study data.</summary>
         public const int FirstPilotId = 90;
 
-        static readonly StudyBlockPlan[][] s_Orders =
+        static readonly StudyBlockPlan[] s_Groups =
         {
-            new[] { new StudyBlockPlan(true, ScenarioSet.A), new StudyBlockPlan(false, ScenarioSet.B) },
-            new[] { new StudyBlockPlan(false, ScenarioSet.A), new StudyBlockPlan(true, ScenarioSet.B) },
-            new[] { new StudyBlockPlan(true, ScenarioSet.B), new StudyBlockPlan(false, ScenarioSet.A) },
-            new[] { new StudyBlockPlan(false, ScenarioSet.B), new StudyBlockPlan(true, ScenarioSet.A) },
+            new StudyBlockPlan(true, ScenarioSet.A),
+            new StudyBlockPlan(false, ScenarioSet.A),
         };
 
-        public static int OrderIndex(int participantId) => ((participantId - 1) % OrderCount + OrderCount) % OrderCount;
+        public static int GroupIndex(int participantId) => ((participantId - 1) % GroupCount + GroupCount) % GroupCount;
 
-        public static StudyBlockPlan[] Plan(int participantId) => s_Orders[OrderIndex(participantId)];
-
-        public static string Describe(int participantId)
-        {
-            var plan = Plan(participantId);
-            return $"{plan[0]}, then {plan[1]}";
-        }
+        public static StudyBlockPlan Plan(int participantId) => s_Groups[GroupIndex(participantId)];
 
         public static bool IsPilot(int participantId) => participantId >= FirstPilotId;
     }
@@ -91,9 +84,8 @@ namespace PhysicsSandbox
     }
 
     /// <summary>
-    /// The study's fixed content: two parallel six-item tests (four items on the sandbox's
-    /// concepts, then two transfer items with materials it does not contain), the
-    /// presence-and-comfort items, and the unmarked-block heaviness trials.
+    /// The study's fixed content: two parallel four-item tests on the sandbox's concepts, the
+    /// presence-and-comfort items, and the heaviness trials.
     /// </summary>
     public static class StudyDesign
     {
@@ -101,7 +93,7 @@ namespace PhysicsSandbox
 
         static readonly (float light, float heavy)[] s_HeavinessPairs =
         {
-            (0.5f, 2f), (1f, 4f), (2f, 8f), (0.5f, 4f), (1f, 8f), (0.5f, 8f),
+            (0.5f, 2f), (1f, 4f), (1f, 8f), (0.5f, 8f),
         };
 
         public static readonly TestItem[] TestA =
@@ -114,10 +106,6 @@ namespace PhysicsSandbox
                 new[] { "The ice block", "The steel block", "They slide the same distance" }, 0),
             new TestItem("A4_lever", "A 6 kg load sits 10 cm to the left of a lever's pivot. How far to the right of the pivot does a 2 kg load balance it?",
                 new[] { "10 cm", "20 cm", "30 cm", "60 cm" }, 2, true),
-            new TestItem("A5_transfer", "You hold a 1 kg bag of feathers, then a 1 kg bar of gold. Which one pulls down harder on your hand?",
-                new[] { "The feathers", "The gold", "They pull the same" }, 2),
-            new TestItem("A6_transfer", "Olive oil is less dense than water. You pour some into a glass of water. Where does the oil end up?",
-                new[] { "It floats on top", "It sinks to the bottom", "It spreads evenly through the water" }, 0),
         };
 
         public static readonly TestItem[] TestB =
@@ -130,10 +118,6 @@ namespace PhysicsSandbox
                 new[] { "The ice block", "The aluminum block", "They slide the same distance" }, 0),
             new TestItem("B4_lever", "An 8 kg load sits 5 cm to the left of a lever's pivot. How far to the right of the pivot does a 2 kg load balance it?",
                 new[] { "5 cm", "10 cm", "20 cm", "40 cm" }, 2, true),
-            new TestItem("B5_transfer", "You put 1 kg of foam on a scale, then 1 kg of lead. Which one gives the higher reading?",
-                new[] { "The foam", "The lead", "The readings are the same" }, 2),
-            new TestItem("B6_transfer", "Honey is denser than water. You pour some into a glass of water. Where does the honey end up?",
-                new[] { "It sinks to the bottom", "It floats on top", "It spreads evenly through the water" }, 0),
         };
 
         /// <summary>The first four are averaged into the presence score; the last is comfort.</summary>

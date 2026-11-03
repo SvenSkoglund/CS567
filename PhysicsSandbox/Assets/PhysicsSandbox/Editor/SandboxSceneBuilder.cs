@@ -94,7 +94,7 @@ namespace PhysicsSandbox.Editor
 
             CreateHud(root, new Vector3(0.45f, 1.60f, 1.35f), panel, lever, waterVolume, ramp);
 
-            var unmarkedMaterial = CreateMaterial("Unmarked", new Color(0.55f, 0.56f, 0.58f), 0f, 0.3f);
+            var unmarkedMaterial = CreateMaterial("Unmarked", new Color(0.52f, 0.22f, 0.78f), 0f, 0.3f);
             var unmarkedSet = new GameObject("Unmarked Study Blocks").transform;
             unmarkedSet.SetParent(root, false);
             var unmarkedLeft = CreateUnmarkedBlock(unmarkedSet, "Unmarked Left", new Vector3(-0.28f, k_TableTop, 0.50f), unmarkedMaterial, lineMaterial);
@@ -178,7 +178,8 @@ namespace PhysicsSandbox.Editor
             return block;
         }
 
-        // Identical gray cubes for the heaviness trials: nothing but the cue separates them.
+        // Identical purple cubes for the heaviness trials: nothing but the cue separates them,
+        // and the color matches no lesson material, so it claims no density.
         static PhysicsBlock CreateUnmarkedBlock(Transform parent, string name, Vector3 tablePosition, Material material, Material lineMaterial)
         {
             var root = new GameObject(name);
@@ -302,7 +303,7 @@ namespace PhysicsSandbox.Editor
             renderer.sharedMaterial = panelMaterial;
             renderer.shadowCastingMode = ShadowCastingMode.Off;
 
-            var title = CreateText("Title", root.transform, "Experiment mode", 0.50f, new Vector2(size.x - 0.08f, 0.07f), TextAlignmentOptions.TopLeft);
+            var title = CreateText("Title", root.transform, "Participant mode", 0.50f, new Vector2(size.x - 0.08f, 0.07f), TextAlignmentOptions.TopLeft);
             title.rectTransform.anchoredPosition = new Vector2(0f, size.y * 0.5f - 0.07f);
             title.fontStyle = FontStyles.Bold;
             title.color = new Color(1f, 0.72f, 0.35f);

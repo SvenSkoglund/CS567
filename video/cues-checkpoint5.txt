@@ -1,0 +1,31 @@
+# Headset-only prompter cues. First line of a card: what to do. Remaining lines: what to say.
+# Blank line = next card. Edit freely, then press Play again.
+
+Hold the left menu button until REC shows. Press Start participant mode
+I enter a participant ID. The ID decides the group: each person has the cue on or off for the whole session, so twelve participants give six in each group.
+
+Change the ID to show the group changing. Settle on 95
+The group changes with the ID. I'm using a pilot ID with the cue on, so this run is marked pilot in the data.
+
+Training: press a button, place the purple block on the green pad
+Training first: point and press a button, then place the block on the pad.
+
+Quiz 1
+First a quiz, to measure what the participant predicts before using the sandbox. Each answer is logged with its response time.
+
+Four lifting pairs
+Four lifting pairs. The purple blocks look identical, so only the cue tells them apart. Each grab logs mass, hold time, lift height, and the offset, gain, and lag.
+
+Four tasks: compare, tank, ramp, lever
+Now the four tasks: compare, tank, ramp, and lever. Each one records a prediction and its own measures.
+
+Quiz 2
+The same quiz again. Comparing the improvement between the groups answers the main question.
+
+The five questions
+Five ratings about how it felt, including comfort.
+
+Summary screen
+The summary shows the scores and the saved file names.
+
+Done: hold the left menu button to stop recording

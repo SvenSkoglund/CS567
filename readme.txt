@@ -7,10 +7,10 @@ REQUIRED LINKS  (confirm each opens in a private/incognito tab)
 ====================================================================
 
 Checkpoint 4, short demo video (5 min or less, YouTube unlisted):
-  PASTE-SHORT-VIDEO-LINK-HERE
+  https://www.youtube.com/watch?v=sOGgNZ-MpX4
 
 Checkpoint 5, long video, slides then experiment (YouTube unlisted):
-  PASTE-LONG-VIDEO-LINK-HERE
+  https://www.youtube.com/watch?v=c34EALLOnFc
 
 ====================================================================
 OTHER LINKS
@@ -47,10 +47,10 @@ workbench holding:
   the lever, tank and ramp outcomes.
 - A ramp on a side table (new). Friction decides what slides: at 12.5 degrees ice
   runs to the bottom, while the heavier aluminum and steel hold when set down square.
-- Experiment mode (new). It runs the study as a participant sees it: enter a
-  participant ID, the counterbalanced condition order follows from it, then
-  training and two blocks of pre-test, four scenes, six heaviness trials, post-test
-  and questionnaire. Everything is logged to file.
+- Participant mode (new). It runs the study as a participant sees it: enter a
+  participant ID, which sets one cue setting for the whole session, then training,
+  pre-test, four heaviness trials, four scenes, post-test and questionnaire.
+  Everything is logged to file.
 
 Checked against closed-form physics in Play mode: displayed lift follows the gain
 mapping (a 30 cm hand lift leaves steel 12.7 cm below the hand and pine 2.5 cm),
@@ -84,7 +84,7 @@ Controls:
 
 To regenerate the scene from code: menu CS567 -> Build Sandbox Scene.
 
-Experiment mode: point at "Start experiment mode" and squeeze the grip or pull the
+Participant mode: point at "Start participant mode" and squeeze the grip or pull the
 trigger (keyboard: F1). Enter the participant ID with the buttons or the number keys.
 IDs 1-12 are study participants; 90-99 are logged as pilot runs. Answer by pointing
 and squeezing (keyboard: F1 to F7). Experimenter keys: F10 skips a task, F12 aborts.
@@ -102,7 +102,7 @@ FILES
   PhysicsSandbox/                             Unity project
   PhysicsSandbox/Assets/PhysicsSandbox/       our code, scene, materials and tests
     Runtime/                                  cue, blocks, lever, buoyancy, ramp, panel,
-                                              experiment mode, study design, logging
+                                              participant mode, study design, logging
     Editor/                                   scene builder, self-test, test runner
     AgentBridge/                              lets the AI coding agent drive the editor
     Tests/EditMode/                           unit tests

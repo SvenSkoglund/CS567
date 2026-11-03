@@ -22,6 +22,9 @@ namespace PhysicsSandbox
         /// <summary>Lag time constant applied to the heaviest object; the lightest gets 0.</summary>
         public const float MaxLagSeconds = 0.30f;
 
+        /// <summary>Lag while an object is above where the hand puts it. Weight pulls it down, so it barely trails.</summary>
+        public const float FallLagSeconds = 0.015f;
+
         public static float Heaviness01(float massKg) =>
             Mathf.Clamp01(Mathf.Log(Mathf.Max(massKg, 1e-4f) / MinMassKg) / Mathf.Log(MaxMassKg / MinMassKg));
 
@@ -30,6 +33,10 @@ namespace PhysicsSandbox
 
         /// <summary>Time constant of the first-order lag between hand and displayed object.</summary>
         public static float LagSeconds(float massKg) => Mathf.Lerp(0f, MaxLagSeconds, Heaviness01(massKg));
+
+        /// <summary>Time constant for vertical motion: the full lag going up, almost none falling.</summary>
+        public static float VerticalLagSeconds(float massKg, bool falling) =>
+            falling ? Mathf.Min(LagSeconds(massKg), FallLagSeconds) : LagSeconds(massKg);
 
         /// <summary>
         /// Where the object is displayed, relative to where it was grabbed, for a given hand

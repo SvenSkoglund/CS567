@@ -1,0 +1,9 @@
+Checkpoint 5 speaker notes
+
+SLIDE 1: Can a visual cue make virtual weight matter?
+
+Hi, I’m Sven. This is Physics You Can Feel. A VR controller weighs the same whatever it stands for, so students can’t feel the thing many physics lessons depend on. My research question: does a pseudo-haptic weight cue, added to direct manipulation, change how accurately people predict outcomes that depend on mass, density and load? Four things changed since the proposal. It runs on the Quest 2 over Link instead of as a standalone build. The cue now scales lifting only and levels off, because plain gain in every direction looked wrong. The cue is on held objects, and the lever shows its load by tilting. And one build gives each participant one cue setting for the whole session.
+
+SLIDE 2: Ready to run the study
+
+Here’s where it stands. The sandbox works, with the four materials, the lever, the tank, and the ramp that was missing at Checkpoint 3. The physics checks pass; the ramp is within about three percent of the closed form. New since last time, participant mode: I enter a participant ID, it assigns one cue setting for the whole session, runs the trials and questions, and logs everything. Before the final I still need to run twelve participants, analyze the three hypotheses, add one more concept, and finish the paper. The biggest risk is that the cue is too subtle to perceive. If people can’t feel a difference with the cue on, comparing the groups won’t tell us much. So I’ll pilot first and adjust the cue if needed. Now I’ll run the experiment as a participant would.

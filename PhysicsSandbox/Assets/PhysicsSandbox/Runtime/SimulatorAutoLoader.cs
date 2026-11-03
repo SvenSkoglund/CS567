@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
 
@@ -22,12 +23,21 @@ namespace PhysicsSandbox
         void Start()
         {
             SimulatorActive = false;
-            if (XRSettings.isDeviceActive || m_SimulatorPrefab == null)
+            if (HeadsetConnected() || m_SimulatorPrefab == null)
                 return;
 
             var simulator = Instantiate(m_SimulatorPrefab);
             simulator.name = m_SimulatorPrefab.name;
             SimulatorActive = true;
+        }
+
+        // XRSettings.isDeviceActive stays false until the session is running, which can be after
+        // Start. The display subsystem only exists once the runtime has found a headset.
+        static bool HeadsetConnected()
+        {
+            var displays = new List<XRDisplaySubsystem>();
+            SubsystemManager.GetSubsystems(displays);
+            return displays.Count > 0;
         }
     }
 }

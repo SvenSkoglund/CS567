@@ -15,7 +15,7 @@ namespace PhysicsSandbox
     {
         static readonly string[] s_ResponseColumns =
         {
-            "timestamp", "participant", "run_type", "order", "block", "cue", "set", "phase", "item", "prompt",
+            "timestamp", "participant", "run_type", "group", "block", "cue", "set", "phase", "item", "prompt",
             "choice", "correct_choice", "correct", "rt_ms", "completion_ms", "falls", "outcome", "measures",
         };
 

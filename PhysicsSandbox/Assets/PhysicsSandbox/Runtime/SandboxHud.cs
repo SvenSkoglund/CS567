@@ -2,6 +2,7 @@ using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.XR.Interaction.Toolkit.Locomotion.Jump;
 
 namespace PhysicsSandbox
 {
@@ -64,6 +65,10 @@ namespace PhysicsSandbox
             m_ToggleCue = CreateButton("Toggle Cue", "<Keyboard>/p", "<XRController>{RightHand}/primaryButton");
             m_ToggleGhost = CreateButton("Toggle Ghost", "<Keyboard>/o", "<XRController>{RightHand}/secondaryButton");
             m_Reset = CreateButton("Reset Blocks", "<Keyboard>/backspace", "<XRController>{LeftHand}/primaryButton");
+
+            // The rig's default Jump action is also on the A button, which toggles the cue here.
+            foreach (var jump in FindObjectsByType<JumpProvider>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+                jump.enabled = false;
         }
 
         static InputAction CreateButton(string actionName, params string[] bindings)
@@ -98,7 +103,10 @@ namespace PhysicsSandbox
                 return;
 
             if (m_ToggleCue.WasPressedThisFrame())
+            {
                 PseudoHapticSettings.CueEnabled = !PseudoHapticSettings.CueEnabled;
+                Debug.Log("Weight cue toggled: " + PseudoHapticSettings.CueEnabled);
+            }
 
             if (m_ToggleGhost.WasPressedThisFrame())
                 PseudoHapticSettings.GhostEnabled = !PseudoHapticSettings.GhostEnabled;

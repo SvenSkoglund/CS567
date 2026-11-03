@@ -10,7 +10,7 @@ namespace PhysicsSandbox
     /// where the object would be under one-to-one tracking; this class then displays it at
     /// a position whose lift is scaled by a mass-dependent control-to-display gain (levelling
     /// off with height) and whose motion is smoothed by a mass-dependent lag, so a heavier
-    /// object hangs lower and trails the hand more.
+    /// object hangs lower and trails the hand more, except that it falls without trailing.
     /// With the cue disabled the object tracks the hand exactly.
     /// </summary>
     public class PseudoHapticGrabTransformer : XRGeneralGrabTransformer
@@ -94,12 +94,18 @@ namespace PhysicsSandbox
 
                 var handDisplacement = targetPose.position - m_AnchorRaw;
                 var desired = m_AnchorDisplayed + (cueOn ? PseudoHapticMapping.DisplayedDisplacement(handDisplacement, MassKg) : handDisplacement);
-                var blend = CurrentLagSeconds > 1e-4f ? 1f - Mathf.Exp(-Time.deltaTime / CurrentLagSeconds) : 1f;
-                m_Displayed.position = Vector3.Lerp(m_Displayed.position, desired, blend);
+                var blend = Blend(CurrentLagSeconds);
+                var falling = desired.y < m_Displayed.position.y;
+                var verticalLag = cueOn ? PseudoHapticMapping.VerticalLagSeconds(MassKg, falling) : 0f;
+                var position = Vector3.Lerp(m_Displayed.position, desired, blend);
+                position.y = Mathf.Lerp(m_Displayed.position.y, desired.y, Blend(verticalLag));
+                m_Displayed.position = position;
                 m_Displayed.rotation = Quaternion.Slerp(m_Displayed.rotation, targetPose.rotation, blend);
             }
 
             targetPose = m_Displayed;
         }
+
+        static float Blend(float lagSeconds) => lagSeconds > 1e-4f ? 1f - Mathf.Exp(-Time.deltaTime / lagSeconds) : 1f;
     }
 }

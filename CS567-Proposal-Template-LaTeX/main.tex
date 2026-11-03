@@ -44,7 +44,7 @@ cues, modulating control-to-display gain and visual lag, so that a heavier objec
 heavier; the cue tracked mass, while density was revealed through the volume of
 equal-mass blocks and through whether they floated or sank. The application was pure
 VR with no in-scene agent; agentic AI was instead the development workflow. We
-validated the system against closed-form physics and ran a within-subjects study
+validated the system against closed-form physics and ran a between-subjects study
 testing whether the weight cue improved how accurately learners predicted outcomes
 that depended on mass, density, and load.
 \end{abstract}
@@ -137,7 +137,9 @@ work described~\cite{dominjon2005influence}, and that proved wrong in practice: 
 sideways move the block stayed offset sideways, as if pulled by sideways gravity, which
 the author noticed within seconds of watching it. Only \emph{upward} displacement was
 therefore scaled, so that a heavy block hung below the hand and came level again when
-lowered. A plain gain also let a heavy block drift arbitrarily far from the hand on a
+lowered. Lag was limited the same way: a heavy block that trailed the hand on the way down
+looked as if it were floating, so a block above where the hand placed it fell with only
+15\,ms of smoothing, whatever its mass. A plain gain also let a heavy block drift arbitrarily far from the hand on a
 long lift, so the shortfall levelled off with height, at about 15\,cm for the heaviest
 block. Held objects were kinematic, and each was handed back to the physics engine on
 release, so the simulation and the cue did not fight.
@@ -221,9 +223,9 @@ gain never rose and lag never fell with mass, that displayed lift never rose wit
 and that the offset stayed bounded. In Play mode, a 30\,cm hand lift left a 7.85\,kg
 block 12.7\,cm below the hand and a 0.5\,kg block 2.5\,cm below it, and a further 50\,cm
 sideways move left both offsets unchanged. \textbf{Experiment mode:} unit tests confirmed that twelve
-participants filled the four orders equally and that the heaviness trials were balanced
+participants filled the two conditions equally and that the heaviness trials were balanced
 across sides, and a scripted participant completed full sessions through the real grab
-and button pipeline, 58 responses and 39 grabs per session with no errors, its data marked
+and button pipeline, 24 responses and 16 grabs per session with no errors, its data marked
 as a self-test. \textbf{Performance:} because
 dropped frames would confound the cue, each session logged the mean frame rate of each
 block and the number of frames over a 72\,Hz budget.
@@ -248,13 +250,13 @@ mass, density, and load, compared with the same manipulation without the cue? We
 the study using the standard structure of participants, apparatus, procedure, and design.
 
 \subsection{Participants}
-Twelve participants (the class minimum for a repeated-measures design) were recruited
+Twelve participants, six in each condition, were recruited
 from non-physics courses, targeting students who had not taken university physics so
 that measurable misconceptions were present to begin with. Recruitment used the standard
 class data-collection form. The project was not intended for outside publication, so no
 IRB submission was required; had publication been pursued later, an IRB with a faculty
 principal investigator would have been arranged before any recruitment began.
-Participation took about 30 minutes, and participants could stop at any time. Participants
+Participation took about 15 minutes, and participants could stop at any time. Participants
 were identified only by a two-digit ID.
 
 \subsection{Apparatus}
@@ -279,45 +281,50 @@ excluded from analysis.
 \subsection{Procedure}
 The experimenter entered the participant's ID, which set the condition order. Each
 participant then completed a short training scene to learn pointing and grab-and-place,
-followed by two blocks, one per condition. Each block ran the same sequence: a six-item
-pre-test; the four scenes of Table~\ref{tab:scenes}; six heaviness trials; the post-test;
-and a five-item questionnaire. Participants stood at a station for each task and were moved
+followed by one sequence under a single cue setting: a four-item pre-test; four heaviness
+trials; the four scenes of Table~\ref{tab:scenes}; the post-test; and a five-item
+questionnaire. Participants stood at a station for each task and were moved
 between stations automatically, so no walking or joystick travel was involved. In each
 scene they first committed to a prediction, then carried out the task, then saw the
-outcome. A heaviness trial presented two identical unmarked gray cubes of different mass;
-participants lifted both and chose which felt heavier, with six mass pairs differing by a
-factor of four to sixteen and the heavier block on each side equally often. The session
-ended with a brief interview about what felt different between the two blocks.
+outcome. A heaviness trial presented two identical, unlabeled 10\,cm purple cubes of different mass,
+in a color matching none of the sandbox's materials so that it implied no density.
+Participants lifted both and chose the left block, the right block, or that they felt the
+same, with four mass pairs differing by a factor of four to sixteen and the heavier block on
+each side equally often. The session ended with a brief interview about how handling the
+blocks felt.
 
 \begin{table}[h]
-  \caption{The four scenes in each scenario set. Set A and set B used different block
-  pairings, so no participant saw the same scene twice.}
+  \caption{The four scenes every participant completed.}
   \label{tab:scenes}
-  \begin{tabular}{p{0.2\columnwidth}p{0.33\columnwidth}p{0.33\columnwidth}}
+  \begin{tabular}{p{0.2\columnwidth}p{0.7\columnwidth}}
     \toprule
-    Scene & Set A & Set B \\
+    Scene & Task \\
     \midrule
-    Same mass & 1\,kg pine and aluminum: which is heavier? & 1\,kg ice and steel: which is heavier? \\
-    Buoyancy & 1\,L ice, then aluminum: float or sink? & 1\,L pine, then steel: float or sink? \\
-    Ramp & 1\,L ice and steel: which slides farther? & 1\,L ice and aluminum: which slides farther? \\
-    Lever & Ice balances aluminum at 10\,cm: predict, then place (29.4\,cm) & Aluminum balances steel at 5\,cm: predict, then place (14.5\,cm) \\
+    Same mass & 1\,kg pine and aluminum: which is heavier? \\
+    Buoyancy & 1\,L ice, then aluminum: float or sink? \\
+    Ramp & 1\,L ice and steel: which slides farther? \\
+    Lever & Ice balances aluminum at 10\,cm: predict, then place (29.4\,cm) \\
     \bottomrule
   \end{tabular}
 \end{table}
 
 \subsection{Design}
-The experiment was within subjects with one independent variable, the \emph{weight cue}
-(on vs.\ off). Cue order was counterbalanced across participants, and the two matched
-scenario sets (A and B) were paired with the two cue conditions; set was counterbalanced
-against cue condition. Crossing the two gave four orders, assigned from the participant ID,
-so that twelve participants filled each order three times.
+The experiment was between subjects with one independent variable, the \emph{weight cue}
+(on vs.\ off). Each participant used one setting for the whole session, assigned from the
+participant ID so that twelve participants gave six in each condition.
+
+The original design was within subjects, with every participant completing a full block in
+each condition. Pilot runs showed that this was too convoluted, making the session long and
+repetitive for participants. We moved to the present design so that the study could focus
+more closely on the research question, accepting that comparing separate groups requires
+more participants to detect an effect of the same size.
 
 The primary dependent variable was \emph{prediction accuracy} on a short misconception test
-given before and after each block, in a form matched to that block's set. Its six items
+given before and after the session's activities. Its four items
 followed the style of the Force Concept Inventory~\cite{hestenes1992force}: which of two
-equal-mass blocks is larger, which floats, which slides farther down a ramp, where a lever
-balances, and two transfer items using materials not present in the sandbox. Secondary
-dependent variables were the forced-choice heaviness judgment (a manipulation check that the
+equal-mass blocks is larger, which floats, which slides farther down a ramp, and where a lever
+balances. Secondary
+dependent variables were the three-way heaviness judgment (a manipulation check that the
 cue was perceived at all), predictions in the scenes, task completion time, lever placement
 error, and the presence score (the mean of four seven-point items), with the fifth item
 reported separately as comfort.
@@ -326,13 +333,15 @@ We tested three hypotheses:
 \begin{itemize}
   \item \textbf{H1:} the gain in prediction accuracy from pre-test to post-test was larger
         with the cue on than with the cue off.
-  \item \textbf{H2:} heaviness judgments were above chance with the cue on and at chance with
-        the cue off (the manipulation check).
+  \item \textbf{H2:} participants chose the heavier block more often with the cue on than with
+        the cue off, where they would mostly report that the blocks felt the same (the
+        manipulation check).
   \item \textbf{H3:} reported presence was higher with the cue on.
 \end{itemize}
-H1 was tested with a $2\times2$ repeated-measures ANOVA on accuracy (cue $\times$ pre/post),
-with the interaction term as the effect of interest; H2 with a binomial test against chance
-in each condition; and H3 with a paired $t$-test on the presence score.
+H1 was tested with a $2\times2$ mixed ANOVA on accuracy (cue, between subjects, $\times$
+pre/post, within subjects), with the interaction term as the effect of interest; H2 with a
+Mann-Whitney $U$ test on the number of correct choices per participant; and H3 with an
+independent-samples $t$-test on the presence score.
 
 \section{Status and Remaining Work}
 \label{sec:deliverables}
@@ -340,7 +349,7 @@ By the mid-point demonstration in early November, the following were complete: a
 scene for the Quest~2 with grab-and-place for four materials, a lever, a water tank, and a
 ramp, with pseudo-haptic weight modulation; scripted physics-fidelity checks against closed
 forms for density, buoyancy, friction, and the lever; and an experiment mode that took a
-participant ID, set the counterbalanced order, ran the training, the trials, and the
+participant ID, assigned the cue setting, ran the training, the trials, and the
 questions, and logged all of it to file.
 
 Remaining at that point were: at least one more concept built on the same framework (for
@@ -358,7 +367,7 @@ We built a VR physics sandbox that turned abstract relationships, from density a
 the mechanics of the lever, into things a learner could feel and test through direct, embodied
 manipulation. The application was pure VR with no in-scene agent; agentic AI was the workflow
 used to build it. Its validation showed the simulation matching the underlying physics, and its
-experiment mode made the within-subjects study of the weight cue ready to run.
+experiment mode made the between-subjects study of the weight cue ready to run.
 
 \section*{Use of AI}
 Generative AI (a large language model) was used to help locate candidate peer-reviewed

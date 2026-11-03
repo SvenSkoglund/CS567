@@ -49,7 +49,7 @@ def describe(name, rows):
     if not rows:
         print(f"{name}: no responses")
         return
-    print(f"{name}  run_type={rows[0]['run_type']}  order={rows[0]['order']}  rows={len(rows)}")
+    print(f"{name}  run_type={rows[0]['run_type']}  group={rows[0].get('group', rows[0].get('order'))}  rows={len(rows)}")
     falls = sum(int(r["falls"] or 0) for r in rows)
     unfinished = [f"{r['phase']}/{r['item']}={r['outcome']}" for r in rows if r["outcome"] in ("skipped", "timeout")]
     for block in sorted({r["block"] for r in rows if r["block"] not in ("", "0")}):
@@ -68,16 +68,33 @@ def describe(name, rows):
     print(f"  falls: {falls}   unfinished tasks: {', '.join(unfinished) if unfinished else 'none'}")
 
 
+def group_table(sessions):
+    for cue in ("on", "off"):
+        group = [s for s in sessions if any(r["cue"] == cue for r in s)]
+        if not group:
+            print(f"  cue {cue.upper():3} (0 people): no runs yet")
+            continue
+        rows = [r for s in group for r in s if r["cue"] == cue]
+        pre, post, heavy = score(rows, "pretest"), score(rows, "posttest"), score(rows, "heaviness")
+        same = sum(r["choice"] == "They felt the same" for r in rows if r["phase"] == "heaviness")
+        ratings = [p for p, _ in (presence(s) for s in group) if p is not None]
+        mean_presence = f"{sum(ratings) / len(ratings):.2f}" if ratings else "n/a"
+        print(f"  cue {cue.upper():3} ({len(group)} people): pre {pre[0]}/{pre[1]}  post {post[0]}/{post[1]}"
+              f"  mean quiz gain {(post[0] - pre[0]) / len(group):+.2f}"
+              f"  heaviness {heavy[0]}/{heavy[1]}  felt the same {same}  presence {mean_presence}")
+
+
 def totals(sessions):
     study = [rows for rows in sessions.values() if rows and rows[0]["run_type"] == "study"]
     print(f"\nStudy participants: {len(study)}")
-    if not study:
-        print("No study data yet; pilot and self-test runs are not counted.")
+    if study:
+        group_table(study)
         return
-    for cue in ("on", "off"):
-        rows = [r for s in study for r in s if r["cue"] == cue]
-        pre, post, heavy = score(rows, "pretest"), score(rows, "posttest"), score(rows, "heaviness")
-        print(f"  cue {cue.upper():3}: pre {pre[0]}/{pre[1]}  post {post[0]}/{post[1]}  heaviness {heavy[0]}/{heavy[1]}")
+    print("No study data yet; pilot and self-test runs are not counted.")
+    pilots = [rows for rows in sessions.values() if rows and rows[0]["run_type"] == "pilot"]
+    if pilots:
+        print("\nSample of the study summary, from pilot runs only (not study data):")
+        group_table(pilots)
 
 
 def main():

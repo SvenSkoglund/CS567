@@ -1,0 +1,34 @@
+# Headset-only prompter cues. First line of a card: what to do. Remaining lines: what to say.
+# Blank line = next card. Edit freely, then press Play again.
+
+Hold the left menu button until REC shows. Look at the webcam
+I'm Sven. This is Physics You Can Feel, running live on a Quest 2 over Link.
+
+Look across the bench
+Since Checkpoint 3 I added the friction ramp and a participant mode. It now runs in the headset, not a simulator.
+
+Grab same-size pine, then steel. Cue ON
+Same size, very different mass. With the weight cue on, steel hangs below my hand and lags. Pine stays with it.
+
+Press A: cue OFF. Lift pine and steel again
+This is the other condition. Cue off: everything tracks my hand one to one, and they feel the same.
+
+Press A: cue ON. Press B: hide the orange line
+A participant sees this: the cue, without the debug line.
+
+Lift the 1 kg blocks
+Same mass, different size. They get the same cue, because it follows mass. Size shows density.
+
+Put pine and steel in the tank
+Less dense than water floats, denser sinks, at the depth Archimedes predicts.
+
+Same-size ice, then aluminum, on the ramp's green line
+New: the ramp. Ice runs all the way down. Aluminum, though heavier, barely moves. Friction decides, not weight.
+
+Aluminum, then ice, on the lever
+The lever balances when mass times distance match on both sides. The panel shows the torques.
+
+Press Start participant mode. STOP at the ID screen
+Participant mode runs this as a study. That's in my long video. Thanks.
+
+Done: hold the left menu button to stop recording

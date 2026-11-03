@@ -1,0 +1,14 @@
+Checkpoint 5 data clip: what to say
+(Press the right arrow to move to the next screen.)
+
+SCREEN 1: Answers
+"Here's the data from the run you just saw. This is the responses file. There's one row for every answer, with whether it was right and how long it took. You can see the two quizzes, the lifting pairs, the tasks, and the ratings."
+
+SCREEN 2: Grabs
+"This is the interactions file, with one row every time a block was grabbed. It records the block's mass, how long it was held, and how far the hand rose. It also records how far the block hung below the hand, and the gain and lag of the cue. Heavier blocks get a lower gain and more lag."
+
+SCREEN 3: Session and tasks
+"This is the session file: the participant's group, the device, and the frame rate, which stayed close to the 72 hertz target. Below it are the measures from the tasks, like how close the block ended up to the lever's balance point."
+
+SCREEN 4: Analysis
+"This script turns the logs into the study's measures. It shows zero study participants because pilot runs aren't counted. Below that is a sample of the group comparison: quiz gain, heaviness judgments, and presence. This is one pilot run, not a result. My quiz gain is zero because I wrote the study and got everything right both times. Thanks for watching."

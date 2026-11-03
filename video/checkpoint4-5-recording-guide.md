@@ -20,9 +20,22 @@ You need your screen and your webcam in one video. OBS Studio is the simplest fr
    are too. That is the shot that shows "a person doing the task in the Quest 2."
 4. Record a 20-second test. Check the audio and that the Game view is not cropped.
 
-The Game view shows an orange **EXPERIMENTER VIEW** strip during experiment mode. It is
+The Game view shows an orange **EXPERIMENTER VIEW** strip during participant mode. It is
 drawn on the desktop only, so it appears in the video but not in the headset. It tells the
 viewer which condition is running.
+
+### Hotkeys and narration cues
+
+OBS is set up with these keys: **F8** starts recording, **F9** stops, **F11** shows the headset
+scene, and **Shift+F11** shows the desktop scene. The headset crop only lines up in Play mode,
+with the Game view set to 16:9 Aspect and Play Maximized.
+
+For cue cards only you can see, choose **CS567 > Narration Prompter > Checkpoint 4** (or
+**Checkpoint 5**) before pressing Play. Press **Y** for the next card and hold it for the previous
+one. **Hold the left menu button for a second** to start or stop recording; the card shows **REC**
+and a timer. This talks to OBS over its WebSocket, so OBS must be open. Edit the cards in
+`video/cues-checkpoint4.txt` and `video/cues-checkpoint5.txt`. The prompter
+turns itself off when the editor restarts. Choose **Off** before running a real participant.
 
 ## Do this first: a 5-minute headset check
 
@@ -31,7 +44,7 @@ This is the first time the project has run on a real headset. Before recording, 
 - [ ] You can grab a block with the **grip**, near and from a distance.
 - [ ] In free play, **A** toggles the cue, **B** the line, **X** resets the blocks.
 - [ ] Heavy blocks visibly lag and hang below your hand with the cue on.
-- [ ] Press **Start experiment mode**: pointing and squeezing the grip (or pulling the
+- [ ] Press **Start participant mode**: pointing and squeezing the grip (or pulling the
       trigger) presses buttons.
 - [ ] Set the ID to **90** and start. You are moved to each station and can reach the blocks.
 - [ ] The panel text is readable and comfortable to look at.
@@ -46,7 +59,7 @@ Show it running, in free play, with your face in frame. This is what you would s
 | Time | Do this | Say something like |
 |---|---|---|
 | 0:00 | Face on camera, headset in hand | "I'm Sven. This is Physics You Can Feel, running live on a Quest 2 over Link." |
-| 0:20 | Headset on, look across the bench | "Since Checkpoint 3 I added the friction ramp and an experiment mode, and it now runs in the headset instead of a simulator." |
+| 0:20 | Headset on, look across the bench | "Since Checkpoint 3 I added the friction ramp and a participant mode, and it now runs in the headset instead of a simulator." |
 | 0:40 | Grab same-size pine, then steel. Cue **ON** (panel shows it) | "Same size, very different mass. With the weight cue on, steel hangs below my hand and lags. Pine stays with it." |
 | 1:30 | Press **A**: cue **OFF**. Lift pine and steel again | "This is the other condition. Cue off: everything tracks my hand one to one, and they feel the same." |
 | 2:10 | Press **A**: cue **ON**. Press **B** to hide the orange line | "A participant sees this: the cue, without the debug line." |
@@ -54,7 +67,7 @@ Show it running, in free play, with your face in frame. This is what you would s
 | 3:00 | Put pine and steel in the tank | "Less dense than water floats, denser sinks, at the depth Archimedes predicts." |
 | 3:30 | Same-size ice, then aluminum, on the ramp's green line | "New: the ramp. Ice runs all the way down. Aluminum, though it's heavier, barely moves. Friction decides, not weight." |
 | 4:10 | Aluminum then ice on the lever | "The lever balances when mass times distance match on both sides. The panel shows the torques." |
-| 4:40 | Press **Start experiment mode** and stop at the ID screen | "Experiment mode runs this as a study. That's in my long video. Thanks." |
+| 4:40 | Press **Start participant mode** and stop at the ID screen | "Participant mode runs this as a study. That's in my long video. Thanks." |
 
 Requirements check: running prototype, features and interaction, **both conditions (cue on and
 off)**, under 5 minutes, no slides, no full experiment.
@@ -67,21 +80,15 @@ Open the slide deck, full screen. Speaker notes on each slide are a full script.
 
 ### Part 2: run the experiment as a participant
 
-Use a **pilot ID, 90 to 99**. Those runs are marked `pilot` in the data, so your demo can't be
-confused with study data. A full session takes roughly 12 to 15 minutes when played by a person, so
-it fits. If you run long, finishing one complete block and then pressing **F12** is acceptable; the
-assignment allows "one complete condition followed by the data it saved."
+Use **pilot ID 95**. Pilot IDs (90 to 99) are marked `pilot` in the data, and odd IDs have the cue on. One
+session is short enough to show in full, so no F12 is needed. The cue cards follow these steps.
 
-1. **Participant ID.** "I enter a participant ID. The order comes from the ID. Four orders cross cue
-   order with which scenario set goes with the cue, so twelve participants fill each order three
-   times." Change the ID with the buttons to show the order changing, then settle on your pilot ID.
-2. **Training.** Point and press a button, then place the gray block on the green pad.
-3. **Block 1.** Say which condition is running (the strip shows it), then do the quiz, the four tasks
-   (compare, tank, ramp, lever), the six lifting pairs, the quiz again, and the five questions. Say what
-   each records: "Each answer is logged with its response time."
-4. **Block 2.** The other condition and the other scenario set. Note that the strip changed. Talk less
-   here, since the structure repeats.
-5. **Summary screen.** It shows the scores and the saved file names.
+1. **Participant ID.** "The ID decides the group: each person has the cue on or off for the whole session."
+   Change the ID with the buttons to show the group changing, then settle on 95.
+2. **Training.** Point and press a button, then place the purple block on the green pad.
+3. **Quiz 1, the four lifting pairs, the four tasks, quiz 2, and the five ratings.** Say what each records:
+   "Each answer is logged with its response time."
+4. **Summary screen.** It shows the scores and the saved file names.
 
 ### Part 3: show the data (required)
 

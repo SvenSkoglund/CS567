@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Physics You Can Feel: slides</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&amp;family=Public+Sans:wght@400;600;700&amp;display=swap">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; background: #14202E; overflow: hidden; }
+section { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: top left; display: none; overflow: hidden; }
+ul { padding-left: 34px; display: flex; flex-direction: column; gap: 14px; }
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; vertical-align: top; padding: 12px 16px 12px 0; border-top: 1px solid #CFC8B8; }
+tr:first-child th { border-top: none; color: #5A6673; font-weight: 600; }
+td:first-child { font-weight: 600; }
+#hint { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); padding: 10px 18px; border-radius: 8px; background: #14202E; color: #F6F3EC; font: 16px Arial, sans-serif; transition: opacity .3s; }
+:fullscreen #hint { opacity: 0; }
+</style>
+</head>
+<body>
+<section id="question" data-transition="fade" style="background:#F6F3EC;color:#14202E;font-family:'Public Sans', Arial, sans-serif;padding:96px 128px 140px;display:flex;flex-direction:column;gap:40px">
+<h2 style="font-family:'Libre Baskerville', Georgia, serif;font-size:60px;font-weight:700;line-height:1.15;color:#14202E">Can a visual cue make virtual weight matter?</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:56px;flex:1">
+<div style="display:flex;flex-direction:column;gap:32px">
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-size:26px;font-weight:700;color:#A8470D;text-transform:uppercase;letter-spacing:1px">The problem</p>
+<p style="font-size:32px;line-height:1.4;color:#2E3B4A">A VR controller weighs the same whatever it represents, so the sensation behind many physics lessons is missing.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#14202E;padding:36px;border-radius:16px">
+<p style="font-size:26px;font-weight:700;color:#F2B27A;text-transform:uppercase;letter-spacing:1px">Research question</p>
+<p style="font-size:32px;line-height:1.4;color:#F6F3EC">Does a pseudo-haptic weight cue, added to direct manipulation in VR, change how accurately learners predict outcomes that depend on mass, density and load?</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-size:26px;font-weight:700;color:#A8470D;text-transform:uppercase;letter-spacing:1px">Changed since the proposal</p>
+<table style="font-size:28px;color:#2E3B4A">
+<tr><th style="width:27%;text-align:left">Area</th><th style="width:73%;text-align:left">Now</th></tr>
+<tr><td>Hardware</td><td>Quest 2 over Link with controllers, not a standalone build with hand tracking</td></tr>
+<tr><td>Weight cue</td><td>Scales lifting only, and the offset levels off; plain gain looked wrong</td></tr>
+<tr><td>Lever</td><td>Its tilt shows the load; the cue applies to held objects only</td></tr>
+<tr><td>Conditions</td><td>One build, with one cue setting per participant</td></tr>
+</table>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:56px;font-size:24px;color:#5A6673">Physics You Can Feel  ·  CS567_SVEN  ·  Sven Skoglund</p>
+</section>
+<section id="status" data-transition="fade" style="background:#F6F3EC;color:#14202E;font-family:'Public Sans', Arial, sans-serif;padding:96px 128px 140px;display:flex;flex-direction:column;gap:40px">
+<h2 style="font-family:'Libre Baskerville', Georgia, serif;font-size:60px;font-weight:700;line-height:1.15;color:#14202E">Ready to run the study</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px;flex:1">
+<div style="display:flex;flex-direction:column;gap:20px;background:#FFFDF8;padding:36px;border:1px solid #DDD6C8;border-radius:16px">
+<h3 style="font-size:36px;font-weight:700;color:#14202E">What works now</h3>
+<ul style="font-size:28px;line-height:1.35;color:#2E3B4A">
+<li>Four materials, lever, water tank and the new ramp</li>
+<li>Physics checks pass; ramp within 3.1% of the closed form</li>
+<li>Participant mode: participant ID, cue setting, trials, questions</li>
+<li>Every answer and grab logged to file</li>
+</ul>
+</div>
+<div style="display:flex;flex-direction:column;gap:20px;background:#FFFDF8;padding:36px;border:1px solid #DDD6C8;border-radius:16px">
+<h3 style="font-size:36px;font-weight:700;color:#14202E">Left before the final</h3>
+<ul style="font-size:28px;line-height:1.35;color:#2E3B4A">
+<li>Recruit and run twelve participants</li>
+<li>Analyze hypotheses H1 to H3</li>
+<li>Add one more concept, a pulley or a launcher</li>
+<li>Final paper and the agentic-AI report</li>
+</ul>
+</div>
+<div style="display:flex;flex-direction:column;gap:20px;background:#14202E;padding:36px;border-radius:16px">
+<h3 style="font-size:36px;font-weight:700;color:#F2B27A">Biggest remaining risk</h3>
+<p style="font-size:30px;line-height:1.4;color:#F6F3EC">The cue may be too subtle to perceive.</p>
+<p style="font-size:28px;line-height:1.4;color:#D5DAE0">If people can’t feel a difference with the cue on, comparing the groups tells us little. I’ll pilot first and adjust the cue if needed.</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:56px;font-size:24px;color:#5A6673">Physics You Can Feel  ·  CS567_SVEN  ·  Sven Skoglund</p>
+</section>
+<div id="hint">Press F for full screen. Arrow keys change slides.</div>
+<script>
+var slides = document.querySelectorAll("section"), current = 0;
+function fit() {
+  var scale = Math.min(innerWidth / 1920, innerHeight / 1080);
+  slides.forEach(function (s) {
+    s.style.transform = "translate(" + (innerWidth - 1920 * scale) / 2 + "px," + (innerHeight - 1080 * scale) / 2 + "px) scale(" + scale + ")";
+  });
+}
+function show(n) {
+  current = Math.max(0, Math.min(slides.length - 1, n));
+  slides.forEach(function (s, i) { s.style.display = i === current ? (s.dataset.display || "flex") : "none"; });
+}
+addEventListener("resize", fit);
+addEventListener("keydown", function (e) {
+  if (e.key === "ArrowRight" || e.key === "PageDown" || e.key === " ") show(current + 1);
+  if (e.key === "ArrowLeft" || e.key === "PageUp") show(current - 1);
+  if (e.key === "f" || e.key === "F") document.documentElement.requestFullscreen();
+});
+fit();
+show(0);
+</script>
+</body>
+</html>

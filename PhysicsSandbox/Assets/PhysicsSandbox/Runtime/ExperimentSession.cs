@@ -22,6 +22,9 @@ namespace PhysicsSandbox
         const float k_TableTop = 0.90f;
         const float k_PanelZ = 1.12f;
         const float k_LiftedM = 0.05f;
+
+        // Half the pad plus half the block: a block touching the training pad counts as placed.
+        const float k_TrainingPadReachM = 0.13f;
         const float k_TaskTimeoutSeconds = 150f;
         const float k_LeverTolerance = 0.10f;
         const float k_LeverHoldSeconds = 1f;
@@ -51,6 +54,7 @@ namespace PhysicsSandbox
         readonly Dictionary<PhysicsBlock, GrabRecord> m_Grabs = new Dictionary<PhysicsBlock, GrabRecord>();
         readonly Dictionary<string, BlockScore> m_Scores = new Dictionary<string, BlockScore>();
         readonly List<string> m_BlockOrder = new List<string>();
+        float? m_LastStationX;
 
         Coroutine m_Run;
         StudyLog m_Log;
@@ -175,7 +179,7 @@ namespace PhysicsSandbox
         void ShowIdle()
         {
             m_Panel.transform.position = m_IdlePanelPosition;
-            m_Panel.Show("Experiment mode", "Runs the study as a participant sees it.", new[] { "Start experiment mode" });
+            m_Panel.Show("Participant mode", "Runs the study as a participant sees it.", new[] { "Start participant mode" });
         }
 
         void Update()
@@ -209,6 +213,7 @@ namespace PhysicsSandbox
                 return;
 
             IsActive = true;
+            m_LastStationX = null;
             m_SessionStart = Time.time;
             m_Blocks.Clear();
             m_Blocks.AddRange(FindObjectsByType<PhysicsBlock>(FindObjectsInactive.Include, FindObjectsSortMode.None));
@@ -232,9 +237,7 @@ namespace PhysicsSandbox
 
             yield return Training();
 
-            var plan = Counterbalance.Plan(m_ParticipantId);
-            for (var i = 0; i < plan.Length; i++)
-                yield return RunBlock(i + 1, plan[i], plan.Length);
+            yield return RunBlock(1, Counterbalance.Plan(m_ParticipantId));
 
             yield return ShowSummary();
             End("completed");
@@ -313,7 +316,7 @@ namespace PhysicsSandbox
         void ShowParticipantScreen(string[] buttons)
         {
             m_Panel.transform.position = StationPanelPosition(s_StandQuestions.x);
-            m_Panel.Show("Experiment mode", ParticipantText(), buttons, inARow: true);
+            m_Panel.Show("Participant mode", ParticipantText(), buttons, inARow: true);
         }
 
         void ShowParticipantScreenText() => m_Panel.SetBody(ParticipantText());
@@ -324,8 +327,7 @@ namespace PhysicsSandbox
             var kind = Counterbalance.IsPilot(m_ParticipantId) ? "pilot run, not study data" : "study participant";
             var warning = StudyLog.HasData(m_ParticipantId) ? "\n<color=#F2A65A>This ID already has data. A new file is written.</color>" : "";
             return $"<b>Participant ID: {m_ParticipantId:00}</b>  <size=75%>({kind})</size>\n" +
-                $"Condition order {Counterbalance.OrderIndex(m_ParticipantId) + 1} of {Counterbalance.OrderCount}\n" +
-                $"  Block 1: {plan[0]}\n  Block 2: {plan[1]}{warning}";
+                $"Group: {plan}{warning}";
         }
 
         void WriteSessionHeader()
@@ -333,7 +335,7 @@ namespace PhysicsSandbox
             var plan = Counterbalance.Plan(m_ParticipantId);
             m_Log.WriteSession($"participant: {StudyLog.ParticipantTag(m_ParticipantId)}");
             m_Log.WriteSession($"run_type: {m_RunType}");
-            m_Log.WriteSession($"order: {Counterbalance.OrderIndex(m_ParticipantId) + 1} of {Counterbalance.OrderCount} ({plan[0]}, then {plan[1]})");
+            m_Log.WriteSession($"group: {plan}");
             m_Log.WriteSession($"started: {Clock():yyyy-MM-dd HH:mm:ss}");
             m_Log.WriteSession($"device: {(XRSettings.isDeviceActive ? XRSettings.loadedDeviceName + " / " + XRSettings.eyeTextureWidth + "x" + XRSettings.eyeTextureHeight : "desktop simulator")}");
             m_Log.WriteSession($"unity: {Application.unityVersion}");
@@ -394,8 +396,13 @@ namespace PhysicsSandbox
             m_Panel.transform.position = StationPanelPosition(stand.x);
             if (m_Origin != null && m_Origin.Camera != null)
             {
+                // Only the first station sets the distance from the bench. Later ones slide
+                // sideways, so a step back is never undone and the participant never runs out of room.
                 var head = m_Origin.Camera.transform.position;
-                m_Origin.MoveCameraToWorldLocation(new Vector3(stand.x, head.y, stand.y));
+                m_Origin.MoveCameraToWorldLocation(m_LastStationX.HasValue
+                    ? head + Vector3.right * (stand.x - m_LastStationX.Value)
+                    : new Vector3(stand.x, head.y, stand.y));
+                m_LastStationX = stand.x;
             }
 
             SetTask("", Vector3.zero);
@@ -482,7 +489,7 @@ namespace PhysicsSandbox
 
         void Record(string prompt, string choice, string correctChoice, bool? correct, float rtMs, float completionMs, int falls, string outcome, string measures)
         {
-            m_Log.WriteResponse(Stamp(), StudyLog.ParticipantTag(m_ParticipantId), m_RunType, Counterbalance.OrderIndex(m_ParticipantId) + 1,
+            m_Log.WriteResponse(Stamp(), StudyLog.ParticipantTag(m_ParticipantId), m_RunType, Counterbalance.GroupIndex(m_ParticipantId) + 1,
                 m_BlockNumber, CueText, m_BlockNumber > 0 ? m_BlockSet.ToString() : "", m_Phase, m_Item, prompt, choice, correctChoice,
                 correct, Mathf.RoundToInt(rtMs), Mathf.RoundToInt(completionMs), falls, outcome, measures);
         }
@@ -565,9 +572,9 @@ namespace PhysicsSandbox
             var fallsBefore = Falls(block);
             var start = Time.time;
             var target = new Vector3(pad.x, k_TableTop + block.SideM * 0.5f, pad.z);
-            m_Panel.Show("Training", "Reach out to the gray block, squeeze the grip to hold it, and lift it.\nSet it down on the green pad, then let go.", Array.Empty<string>());
+            m_Panel.Show("Training", "Reach out to the purple block, squeeze the grip to hold it, and lift it.\nSet it down on the green pad, then let go.", Array.Empty<string>());
             SetTask("place", target, block);
-            yield return WaitForTask(() => !block.IsHeld && WasLifted(block) && Horizontal(block.transform.position, target) < 0.08f && block.Rigidbody.linearVelocity.magnitude < k_SettleSpeed);
+            yield return WaitForTask(() => !block.IsHeld && m_Grabs.ContainsKey(block) && Horizontal(block.transform.position, target) < k_TrainingPadReachM && block.Rigidbody.linearVelocity.magnitude < k_SettleSpeed);
             TrainingPadVisible(false);
             var ms = (Time.time - start) * 1000f;
             Record("place the block on the pad", "", "", null, ms, ms, Falls(block) - fallsBefore, m_TaskOutcome, "");
@@ -583,7 +590,7 @@ namespace PhysicsSandbox
 
         // ---------------------------------------------------------------- blocks
 
-        IEnumerator RunBlock(int number, StudyBlockPlan plan, int total)
+        IEnumerator RunBlock(int number, StudyBlockPlan plan)
         {
             m_BlockNumber = number;
             m_BlockCue = plan.CueOn;
@@ -600,9 +607,10 @@ namespace PhysicsSandbox
             Stage(s_StandQuestions);
             m_Phase = "break";
             m_Item = "";
-            yield return Message($"Part {number} of {total}", "This part has a short quiz, four small tasks, some lifting, the quiz again, and a few questions about how it felt.");
+            yield return Message("The study", "This session has a short quiz, some lifting, four small tasks, the quiz again, and a few questions about how it felt.");
 
             yield return RunTest("pretest", plan.Set, random, correct => score.PreCorrect += correct);
+            yield return HeavinessTrials(random, score);
 
             var started = Time.time;
             yield return SameMassScene(plan.Set);
@@ -611,7 +619,6 @@ namespace PhysicsSandbox
             yield return LeverScene(plan.Set);
             score.TaskMs = (Time.time - started) * 1000f;
 
-            yield return HeavinessTrials(random, score);
             yield return RunTest("posttest", plan.Set, random, correct => score.PostCorrect += correct);
             yield return Presence(score);
 
@@ -818,7 +825,7 @@ namespace PhysicsSandbox
         {
             m_Phase = "heaviness";
             var trials = StudyDesign.HeavinessTrials(random);
-            string[] options = { "Left block", "Right block" };
+            string[] options = { "Left block", "Right block", "They felt the same" };
             for (var i = 0; i < trials.Count; i++)
             {
                 var trial = trials[i];
@@ -904,9 +911,9 @@ namespace PhysicsSandbox
             {
                 var s = m_Scores[key];
                 var presence = s.PresenceCount > 0 ? s.PresenceSum / s.PresenceCount : 0f;
-                sb.Append("<b>").Append(key).Append("</b>:  quiz ").Append(s.PreCorrect).Append(" then ").Append(s.PostCorrect).Append(" of 6,  heaviness ")
+                sb.Append("<b>").Append(key).Append("</b>:  quiz ").Append(s.PreCorrect).Append(" then ").Append(s.PostCorrect).Append(" of ").Append(StudyDesign.TestA.Length).Append(",  heaviness ")
                     .Append(s.HeavinessCorrect).Append(" of ").Append(s.HeavinessTotal).Append(",  presence ").Append(presence.ToString("0.0")).Append('\n');
-                m_Log.WriteSession($"summary {key}: pretest {s.PreCorrect}/6, posttest {s.PostCorrect}/6, heaviness {s.HeavinessCorrect}/{s.HeavinessTotal}, presence {presence:0.00}, comfort {s.Comfort:0}, task time {s.TaskMs / 1000f:0.0} s");
+                m_Log.WriteSession($"summary {key}: pretest {s.PreCorrect}/{StudyDesign.TestA.Length}, posttest {s.PostCorrect}/{StudyDesign.TestA.Length}, heaviness {s.HeavinessCorrect}/{s.HeavinessTotal}, presence {presence:0.00}, comfort {s.Comfort:0}, task time {s.TaskMs / 1000f:0.0} s");
             }
 
             sb.Append("<size=75%>Saved ").Append(m_Log.ResponseRows).Append(" responses and ").Append(m_Log.InteractionRows).Append(" grabs:\n")
@@ -995,8 +1002,8 @@ namespace PhysicsSandbox
             var scale = Screen.height / 720f;
             m_StripStyle.fontSize = Mathf.RoundToInt(15f * scale);
             var plan = m_Phase == "setup" ? "ID entry" : m_BlockNumber == 0 ? "training" :
-                $"block {m_BlockNumber} of 2  |  cue {(m_BlockCue ? "ON" : "OFF")}  |  set {m_BlockSet}";
-            var text = $"  EXPERIMENTER VIEW  |  {StudyLog.ParticipantTag(m_ParticipantId)}  |  order {Counterbalance.OrderIndex(m_ParticipantId) + 1}/{Counterbalance.OrderCount}  |  {plan}  |  {m_Phase} {m_Item}  |  F10 skip task, F12 abort";
+                $"cue {(m_BlockCue ? "ON" : "OFF")}";
+            var text = $"  EXPERIMENTER VIEW  |  {StudyLog.ParticipantTag(m_ParticipantId)}  |  {plan}  |  {m_Phase} {m_Item}  |  F10 skip task, F12 abort";
             GUI.Box(new Rect(0f, 0f, Screen.width, 28f * scale), text, m_StripStyle);
         }
 

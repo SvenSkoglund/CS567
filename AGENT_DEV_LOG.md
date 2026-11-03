@@ -282,6 +282,111 @@ Columns / fields per entry:
 
 ---
 
+### 2026-11-02 19:45 — Recording setup and headset-only narration prompter
+- Task given: "help me get set up to capture the headset video combined with the webcam
+  video in the corner", then a question: how will I see the narration script in the sim?
+  The author chose a headset-only prompter from the options the agent offered.
+- Produced: OBS Studio installed and configured outside the repo (Game view plus webcam
+  scene, desktop plus webcam scene, webcam mic, hotkeys). `Runtime/NarrationPrompter.cs`,
+  an editor-only cue card panel drawn as an OpenXR composition layer, with
+  `video/cues-checkpoint4.txt` and `video/cues-checkpoint5.txt`. Turned off the
+  Composition Layers Play mode preview, which would have drawn the panel into the video.
+- Built? Yes. A 10-second OBS test recording played back with the composite and no dropped
+  frames. In Play mode with the simulator: cards step and clamp at both ends, and with the
+  preview off the panel is gone from the Game view while the prompter runs. Not yet checked:
+  a full recording over Link. On Link, the panel showed in the headset and Y changed cards.
+- Human correction needed: the author pointed out the Game view grows on entering Play
+  (the crop was already measured for that layout), and clicked through the Unity layout
+  settings and dialogs the agent could not reach.
+- Notes: the agent's first hotkey choice, F10, would have skipped experiment tasks; a search
+  of the input code caught it before use, so recording moved to F8 and F9. The first real
+  headset run exposed a bug in the agent's earlier code: `SimulatorAutoLoader` tested
+  `XRSettings.isDeviceActive` in `Start`, before the session was running, so the simulator
+  started alongside the headset and took over the camera. The author reported the wrong view.
+  It now checks for an XR display subsystem. The simulator no longer starts with Link on;
+  a later Play run with Link disconnected confirmed the simulator fallback still starts.
+
+---
+
+### 2026-11-02 — Record button on the controller
+- Task given: "can we make the record button a button on the headset controllers so i can
+  trigger it in scene?"
+- Produced: `Runtime/ObsRemote.cs`, an editor-only OBS WebSocket client that reads the password
+  from OBS's own config. Holding the left menu button for a second toggles recording, and the
+  prompter card shows REC with a timer.
+- Built? Yes. Toggled from the editor bridge with OBS: recording started, the card showed
+  REC 00:04, recording stopped, and the 5.4-second file played back. The physical button still
+  has to be pressed on the real controller.
+- Human correction needed: none yet.
+- Notes: a patch script failed twice on escaping a newline through the shell, which caused
+  extra Play mode restarts while the author was in the headset. Direct file edits fixed it.
+
+---
+
+### 2026-11-02 — Fixes found during headset recording tests
+- Task given: the author reported a frozen webcam in OBS, then "A makes the character jump and
+  doesn't seem to toggle the weight queue."
+- Produced: `SandboxHud` disables the rig's `JumpProvider`, whose default action shares the A
+  button with the cue toggle. The prompter card shows the cue state. OBS webcam lowered to
+  640x360, plus a session-only watchdog that restarts the source if its picture stops changing.
+  The headset mic recorded silence (-91 dB for 37 s), so OBS uses the webcam mic with a 15 dB
+  boost, noise suppression and a limiter.
+- Built? Yes. The author confirmed in the headset that A toggles the cue and no longer jumps.
+  The webcam picture changed again after restarting the source.
+- Human correction needed: the author spotted the frozen webcam. The agent had misread the frozen
+  frame as a framing problem and told the author to re-aim the camera several times.
+- Notes: the jump was hidden until now because the project had only run in the simulator. The
+  cause of the silent headset mic was not found. The webcam freeze followed MJPEG decode errors
+  in the OBS log; the watchdog's automatic restart has not yet had a real freeze to catch.
+
+---
+
+### 2026-11-02 — Renamed experiment mode to participant mode on screen
+- Task given: "can we change it to be called participant mode instead of experiment mode?"
+- Produced: new panel title and start button text, plus matching wording in the readme, recording
+  guide and cue cards. Class names and code comments kept their old names to limit risk on the
+  night of the deadline. The paper, the slides and the Checkpoint 4 video still say experiment mode.
+- Built? Yes. Compiled, and a Play mode capture shows the new title and button.
+- Human correction needed: none.
+- Notes: the scene's stored placeholder title was left alone because the session sets it at start.
+
+---
+
+### 2026-11-02 — Redesign to two groups, and changes from the author's first full run
+- Task given: after running participant mode in the headset, the author asked for fewer quiz
+  questions and lifting pairs, a "neither" answer, a block color unlike any material, and a
+  heavy block that falls quickly instead of lagging downward. The author then decided that doing
+  both conditions was too convoluted and moved the study to one cue setting per participant.
+- Produced: session flow of quiz, four lifting pairs, four tasks, quiz, five ratings, with odd
+  IDs cue on and even IDs cue off. Purple study blocks, a "They felt the same" answer, near-zero
+  lag when falling, and a more forgiving training pad. Updated tests, `analysis/summarize.py`,
+  cue cards, guide, readme, slides, and the paper's methodology, with a note on the change.
+- Built? Yes. 28 unit tests pass. The scripted participant finished one session in each group
+  through the real pipeline: 24 responses, 16 grabs, 28 of 28 button presses, no errors. A timed
+  check in the simulator showed a heavy block arriving at once after a drop and still catching up
+  after a lift. The paper was not compiled, because no LaTeX install was found on this PC.
+- Human correction needed: the design changes came from the author's own run. The agent had
+  also proposed material looks for the lifting pairs, which implied impossible densities, and
+  the author's choice of one unrelated color resolved that.
+- Notes: found while testing: the summary screen and session file still hard-coded quiz scores
+  as out of 6. Twelve participants may no longer be enough for a two-group study; the course's
+  minimum for this design is not confirmed. Set B content remains in the code, unused.
+
+---
+
+### 2026-11-02 — Stations no longer pull the participant toward the bench
+- Task given: the author reported being moved closer to the desk at every task, until stepping back
+  had taken them to the back wall of the room.
+- Produced: `ExperimentSession.Stage` now sets the distance from the bench only at the first
+  station, then slides sideways by the distance between stations.
+- Built? Yes. Unit tests and a scripted session pass. Comfort in the headset is for the author to confirm.
+- Human correction needed: found only by a person walking in a real room; the scripted participant
+  and the simulator could not show it.
+- Notes: the first real headset run of a full session surfaced this; the comparison the author
+  remembered as pine and steel was the first task, 1 kg pine and aluminum, per the session log.
+
+---
+
 ## Template (copy for each new entry)
 
 ### YYYY-MM-DD HH:MM — <short task title>
